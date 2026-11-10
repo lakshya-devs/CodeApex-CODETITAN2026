@@ -1,0 +1,374 @@
+import zipfile
+
+html_content = """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VerityBrand — Complete End-to-End Platform</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg: #f7f5f0;
+  --surface: #ffffff;
+  --ink: #171717;
+  --muted: #77746f;
+  --purple: #7651c8;
+  --purple-light: #eee8fa;
+  --border: #e8e4dc;
+  --green: #287b57;
+  --red: #b54c4c;
+  --yellow: #a77a22;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+body { background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+body.app-open { overflow: hidden; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; border: none; }
+.container { width: min(1160px, 90%); margin: auto; }
+
+/* ----------------------------------------------------
+   SCROLL-TRIGGERED TEXT ANIMATIONS (Fade & Slide Up)
+---------------------------------------------------- */
+.scroll-animate {
+  opacity: 0;
+  transform: translateY(35px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.scroll-animate.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+.delay-1 { transition-delay: 0.1s; }
+.delay-2 { transition-delay: 0.2s; }
+.delay-3 { transition-delay: 0.3s; }
+
+/* ----------------------------------------------------
+   NAVIGATION
+---------------------------------------------------- */
+nav { height: 78px; position: sticky; top: 0; z-index: 100; background: rgba(247,245,240,.94); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); }
+.nav-inner { height: 100%; display: flex; align-items: center; justify-content: space-between; }
+.logo { font-family: 'Manrope', sans-serif; font-size: 25px; font-weight: 800; letter-spacing: -1.3px; }
+.logo .verity { color: var(--purple); }
+.logo .brand { color: #171717; }
+.nav-links { display: flex; align-items: center; gap: 30px; font-size: 13px; color: #5e5a55; }
+.nav-links a:hover { color: var(--purple); }
+.nav-cta { background: var(--ink); color: white; padding: 12px 19px; border-radius: 30px; font-weight: 600; transition: .2s; }
+.nav-cta:hover { background: var(--purple); }
+
+/* ----------------------------------------------------
+   HERO & DASHBOARD VISUAL
+---------------------------------------------------- */
+.hero { min-height: 660px; padding: 100px 0 80px; display: flex; align-items: center; }
+.hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 70px; align-items: center; }
+.eyebrow { display: inline-flex; align-items: center; gap: 9px; color: var(--purple); background: var(--purple-light); padding: 8px 13px; border-radius: 30px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--purple); }
+h1, h2, h3 { font-family: 'Manrope', sans-serif; letter-spacing: -1.8px; }
+.hero h1 { font-size: clamp(45px, 6vw, 76px); line-height: 1.06; margin: 27px 0; font-weight: 700; }
+.hero h1 span { color: var(--purple); }
+.hero-description { color: var(--muted); max-width: 490px; font-size: 17px; line-height: 1.8; }
+.hero-buttons { display: flex; gap: 13px; margin-top: 32px; flex-wrap: wrap; }
+.btn-primary { background: var(--purple); color: white; border: 1px solid var(--purple); padding: 15px 23px; border-radius: 30px; font-weight: 600; font-size: 14px; transition: .25s; }
+.btn-primary:hover { background: #6040ae; transform: translateY(-2px); }
+.btn-secondary { background: transparent; color: var(--ink); border: 1px solid #d8d3ca; padding: 15px 23px; border-radius: 30px; font-weight: 600; font-size: 14px; }
+
+.dashboard { background: white; border: 1px solid #e7e2da; border-radius: 22px; padding: 24px; box-shadow: 0 30px 80px rgba(35,25,50,.08); transform: rotate(1deg); }
+.dashboard-top { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 1px solid #eeeae4; }
+.dashboard-title { font-weight: 700; font-size: 14px; }
+.status { color: var(--green); background: #e9f5ed; padding: 6px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; }
+.score { margin: 24px 0; display: flex; justify-content: space-between; align-items: center; }
+.score-number { font-family: 'Manrope', sans-serif; font-size: 48px; font-weight: 800; letter-spacing: -2px; }
+.score-label { font-size: 12px; color: var(--muted); }
+.progress { height: 7px; border-radius: 10px; background: #eee9e2; overflow: hidden; margin-top: 12px; }
+.progress-fill { width: 86%; height: 100%; background: var(--purple); border-radius: 10px; }
+.audit-item { display: flex; align-items: center; gap: 12px; padding: 15px 0; border-bottom: 1px solid #f0ede8; }
+.audit-icon { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: #f4f0fb; color: var(--purple); font-weight: 700; }
+.audit-text { flex: 1; }
+.audit-text strong { display: block; font-size: 12px; margin-bottom: 4px; }
+.audit-text small { color: #99938c; font-size: 10px; }
+
+/* ----------------------------------------------------
+   GENERAL SECTIONS
+---------------------------------------------------- */
+section { padding: 110px 0; }
+.section-heading { max-width: 650px; margin-bottom: 55px; }
+.section-label { color: var(--purple); font-size: 11px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; margin-bottom: 18px; }
+.section-heading h2 { font-size: clamp(34px, 4.5vw, 55px); line-height: 1.12; margin-bottom: 20px; }
+.section-heading p { color: var(--muted); font-size: 16px; line-height: 1.8; }
+
+/* ----------------------------------------------------
+   HOW IT WORKS
+---------------------------------------------------- */
+.how-section { background: #fff; }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.step-card { border: 1px solid var(--border); padding: 30px; border-radius: 18px; background: #fbfaf8; transition: .3s; }
+.step-card:hover { transform: translateY(-6px); border-color: #c9b7ed; }
+.step-number { font-family: 'Manrope', sans-serif; font-size: 13px; color: var(--purple); font-weight: 800; }
+.step-card h3 { font-size: 22px; margin: 28px 0 13px; letter-spacing: -.7px; }
+.step-card p { font-size: 14px; line-height: 1.8; color: var(--muted); }
+
+/* ----------------------------------------------------
+   FLAWS DETECTOR
+---------------------------------------------------- */
+.detector-section { background: white; border-top: 1px solid var(--border); }
+.detector-layout { display: grid; grid-template-columns: 320px 1fr; gap: 60px; align-items: start; }
+.detector-sidebar { position: sticky; top: 110px; display: flex; flex-direction: column; gap: 12px; }
+.detector-link { display: flex; align-items: center; gap: 12px; padding: 16px 20px; background: #fbfaf8; border: 1px solid var(--border); border-radius: 14px; font-size: 14px; font-weight: 600; color: var(--muted); transition: all .25s; }
+.detector-link:hover { background: white; border-color: var(--purple); color: var(--purple); box-shadow: 0 10px 30px rgba(118,81,200,.08); transform: translateX(4px); }
+.detector-content { display: flex; flex-direction: column; gap: 30px; }
+.flaw-card { background: #fbfaf8; border: 1px solid var(--border); border-radius: 18px; padding: 35px; scroll-margin-top: 110px; }
+.flaw-card h3 { font-size: 22px; margin: 15px 0; }
+.flaw-card p { color: var(--muted); line-height: 1.8; font-size: 14px; }
+.flaw-tag { display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.tag-asci { background: #fbeaea; color: #b54c4c; }
+.tag-wcag { background: #eef5ff; color: #3b71ca; }
+.tag-org { background: #fbf3df; color: #a77a22; }
+
+/* ----------------------------------------------------
+   GUIDELINES & CTA & FOOTER
+---------------------------------------------------- */
+.guidelines-section { background: #171717; color: white; }
+.guidelines-section p { color: #aaa6a0; }
+.guideline-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+.guideline-card { padding: 30px; border-radius: 18px; background: #232323; border: 1px solid #333; }
+.guideline-card h3 { font-size: 20px; margin-bottom: 12px; }
+.guideline-card p { color: #aaa6a0; line-height: 1.8; font-size: 14px; }
+
+.cta-section { padding: 110px 0; background: #f7f5f0; }
+.cta-box { background: var(--purple); color: white; border-radius: 25px; padding: 65px; text-align: center; }
+.cta-box h2 { font-size: clamp(35px, 5vw, 55px); line-height: 1.1; margin-bottom: 20px; }
+footer { padding: 35px 0; border-top: 1px solid var(--border); }
+.footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+footer p { color: #8b867f; font-size: 12px; }
+
+/* ----------------------------------------------------
+   FULL-SCREEN APP DASHBOARD (NEW & INTEGRATED)
+---------------------------------------------------- */
+#app-container {
+  position: fixed; inset: 0; background: #fbfaf8; z-index: 9999;
+  display: flex; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+body.app-open #app-container { opacity: 1; pointer-events: auto; }
+
+/* APP SIDEBAR */
+.app-sidebar {
+  width: 280px; background: white; border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; padding: 24px;
+}
+.app-nav { display: flex; flex-direction: column; gap: 8px; margin-top: 40px; flex: 1; }
+.app-nav button {
+  padding: 14px 18px; text-align: left; border-radius: 12px; font-size: 14px; font-weight: 600;
+  color: var(--muted); background: transparent; transition: all 0.2s;
+}
+.app-nav button:hover { background: #f7f5f0; color: var(--ink); }
+.app-nav button.active { background: var(--purple-light); color: var(--purple); }
+
+/* APP MAIN CONTENT */
+.app-main { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow-y: auto; }
+.app-header {
+  height: 78px; background: white; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; padding: 0 40px;
+}
+.close-app-btn { background: #f0ede8; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+.close-app-btn:hover { background: #e0dcd5; }
+
+.app-view { display: none; padding: 40px; max-width: 900px; margin: 0 auto; width: 100%; }
+.app-view.active { display: block; }
+
+/* VIEW: SETUP ORG GUIDELINES */
+.setup-box { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 30px; margin-top: 20px; }
+.setup-box label { display: block; font-weight: 600; font-size: 15px; margin-bottom: 10px; }
+.setup-box textarea {
+  width: 100%; height: 150px; padding: 15px; border: 1px solid var(--border); border-radius: 12px;
+  font-family: inherit; font-size: 14px; resize: vertical; margin-bottom: 20px; background: #faf9f7;
+}
+.setup-box textarea:focus { outline: none; border-color: var(--purple); background: white; }
+
+/* VIEW: ANALYZE */
+.drop-zone {
+  width: 100%; border: 2px dashed #d0cacf; border-radius: 16px; padding: 80px 20px;
+  background: white; text-align: center; cursor: pointer; transition: all 0.2s; margin-top: 20px;
+}
+.drop-zone:hover, .drop-zone.dragover { border-color: var(--purple); background: var(--purple-light); }
+.drop-icon { font-size: 40px; margin-bottom: 15px; }
+.drop-zone h3 { font-size: 18px; margin-bottom: 8px; }
+.drop-zone p { color: var(--muted); font-size: 14px; }
+#file-input { display: none; }
+
+#state-loading { display: none; flex-direction: column; align-items: center; justify-content: center; padding: 80px 0; text-align: center; }
+.spinner { width: 50px; height: 50px; border: 4px solid #eee8fa; border-top-color: var(--purple); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+#state-results { display: none; flex-direction: column; gap: 24px; margin-top: 20px; }
+.dynamic-flaw { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px; border-left: 4px solid var(--red); }
+.dynamic-flaw.warning { border-left-color: var(--yellow); }
+.dynamic-flaw.custom { border-left-color: var(--purple); }
+.flaw-top { display: flex; justify-content: space-between; margin-bottom: 12px; }
+.flaw-title { font-weight: 700; font-size: 16px; }
+.flaw-category { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 700; text-transform: uppercase; background: #f3f0f8; color: var(--purple); }
+.flaw-reason { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 15px; }
+.flaw-fix { background: #f8fcf9; border: 1px solid #dcf0e4; padding: 12px 16px; border-radius: 8px; font-size: 13px; color: var(--green); display: flex; gap: 10px; }
+</style>
+</head>
+<body>
+
+<!-- ==========================================
+     LANDING PAGE
+=========================================== -->
+
+<!-- NAVIGATION -->
+<nav>
+  <div class="container nav-inner">
+    <a href="#home" class="logo"><span class="verity">Verity</span><span class="brand">Brand</span></a>
+    <div class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#detector">Flaws Detector</a>
+      <a href="#guidelines">Guidelines</a>
+      <button class="nav-cta" onclick="openApp()">Launch Platform ↗</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="home">
+  <div class="container hero-grid">
+    <div class="hero-content scroll-animate">
+      <div class="eyebrow"><span class="dot"></span> Brand governance, reimagined</div>
+      <h1>Your brand.<br>Every word.<br><span>Always aligned.</span></h1>
+      <p class="hero-description">VerityBrand helps teams create confidently. Review content against your custom organization rules, ASCI standards, and WCAG accessibility guidelines instantly.</p>
+      <div class="hero-buttons">
+        <button class="btn-primary" onclick="openApp()">Open Application Workflow →</button>
+        <a href="#how" class="btn-secondary">Explore features</a>
+      </div>
+    </div>
+    <!-- MOCK DASHBOARD VISUAL -->
+    <div class="dashboard scroll-animate delay-1">
+      <div class="dashboard-top">
+        <span class="dashboard-title">Brand health overview</span>
+        <span class="status">● On track</span>
+      </div>
+      <div class="score">
+        <div><div class="score-number">86<small>/100</small></div><div class="score-label">Brand alignment score</div></div>
+      </div>
+      <div class="progress"><div class="progress-fill"></div></div>
+      <div class="audit-item">
+        <div class="audit-icon">✓</div>
+        <div class="audit-text"><strong>Custom Org Rules</strong><small>Checked against company pool</small></div>
+      </div>
+      <div class="audit-item">
+        <div class="audit-icon">!</div>
+        <div class="audit-text"><strong>ASCI Claims</strong><small>One statement needs verification</small></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="container">
+    <div class="section-heading scroll-animate">
+      <div class="section-label">How it works</div>
+      <h2>From brand guidelines<br>to confident creation.</h2>
+    </div>
+    <div class="steps">
+      <article class="step-card scroll-animate">
+        <div class="step-number">01 / DEFINE</div>
+        <h3>Input Org Rules</h3>
+        <p>Enter your specific company guidelines into the custom pool. Set constraints for tone, banned words, and compliance.</p>
+      </article>
+      <article class="step-card scroll-animate delay-1">
+        <div class="step-number">02 / REVIEW</div>
+        <h3>Analyze Content</h3>
+        <p>Upload documents or visuals. The engine scans for global standards (ASCI, WCAG) alongside your custom rules.</p>
+      </article>
+      <article class="step-card scroll-animate delay-2">
+        <div class="step-number">03 / IMPROVE</div>
+        <h3>Resolve Flaws</h3>
+        <p>Get precise, context-aware fixes to ensure the final asset is flawless and legally compliant before publishing.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FLAWS DETECTOR -->
+<section class="detector-section" id="detector">
+  <div class="container">
+    <div class="section-heading scroll-animate">
+      <div class="section-label">Compliance & Quality</div>
+      <h2>Inconsistent Flaws Detector</h2>
+      <p>A breakdown of the global engines working behind the scenes. We cross-reference advertising laws, accessibility criteria, and your custom organization rulebook.</p>
+    </div>
+    <div class="detector-layout">
+      <aside class="detector-sidebar scroll-animate">
+        <a href="#flaw-asci" class="detector-link">01 &nbsp; ASCI Standard Violation</a>
+        <a href="#flaw-wcag" class="detector-link">02 &nbsp; WCAG 2.2 Accessibility</a>
+        <a href="#flaw-org" class="detector-link">03 &nbsp; Custom Org Rulebook</a>
+      </aside>
+      <div class="detector-content">
+        <div id="flaw-asci" class="flaw-card scroll-animate">
+          <span class="flaw-tag tag-asci">ASCI Standard</span>
+          <h3>Unsubstantiated Comparative Claim</h3>
+          <p>Detects absolute claims ("Best product in India") that require verifiable, independent research data per advertising law.</p>
+        </div>
+        <div id="flaw-wcag" class="flaw-card scroll-animate">
+          <span class="flaw-tag tag-wcag">WCAG 2.2 Standard</span>
+          <h3>Target Size and Contrast Ratio</h3>
+          <p>Flags non-accessible visual assets, identifying touch targets under 24px and contrast ratios failing the 4.5:1 minimum.</p>
+        </div>
+        <div id="flaw-org" class="flaw-card scroll-animate">
+          <span class="flaw-tag tag-org">Custom Rulebook</span>
+          <h3>Organization Specific Guidelines</h3>
+          <p>Uses your dynamically entered rules to flag anything from aggressive sales tones to incorrect terminology.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GUIDELINES -->
+<section class="guidelines-section" id="guidelines">
+  <div class="container">
+    <div class="section-heading scroll-animate">
+      <div class="section-label" style="color:#b6a0ed">Your brand knowledge</div>
+      <h2>One source of truth.<br>Every team aligned.</h2>
+    </div>
+    <div class="guideline-grid">
+      <article class="guideline-card scroll-animate"><h3>Brand Tone & Voice</h3><p>Ensure every interaction feels authentic.</p></article>
+      <article class="guideline-card scroll-animate delay-1"><h3>Visual Identity</h3><p>Centralize your visual accessibility standards.</p></article>
+      <article class="guideline-card scroll-animate"><h3>Terminology Library</h3><p>Maintain an active glossary of approved terms.</p></article>
+      <article class="guideline-card scroll-animate delay-1"><h3>Compliance Frameworks</h3><p>Safeguard reputation with integrated legal checks.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-box scroll-animate">
+      <h2>Ready to align your brand?</h2>
+      <p style="color:#e4daf8;max-width:550px;margin:auto;line-height:1.8;">Experience the end-to-end workflow application designed to protect and perfect your content.</p>
+      <button class="btn-primary" style="background:white;color:var(--purple);margin-top:25px" onclick="openApp()">Start Application Workflow</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container footer-inner scroll-animate">
+    <a href="#home" class="logo" style="font-size: 20px;"><span class="verity">Verity</span><span class="brand">Brand</span></a>
+    <p>&copy; 2026 VerityBrand Platform.</p>
+  </div>
+</footer>
+
+
+<!-- ==========================================
+     FULL-SCREEN APPLICATION WORKFLOW
+=========================================== -->
+<div id="app-container">
+  
+  <!-- SIDEBAR -->
