@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VerityBrand — AI-Powered Brand Governance | Code Apex</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
+:root{--bg:#f7f5fa;--surface:#fff;--ink:#17131d;--muted:#746c7c;--purple:#8546d8;--purple-dark:#6f35bd;--lav:#f1e9fa;--border:#ece6f2;--green:#287b57;--red:#b54c4c}
+[data-theme="dark"] {
+  --bg: #0d0912;
+  --surface: #181124;
+  --ink: #f0e6f5;
+  --muted: #a395b0;
+  --border: #312345;
+  --lav: #2a1f3d;
+}
+[data-theme="dark"] nav { background: rgba(13, 9, 18, 0.94); }
+[data-theme="dark"] .preview, [data-theme="dark"] .mini-card, [data-theme="dark"] .feature, [data-theme="dark"] .panel, [data-theme="dark"] .price, [data-theme="dark"] .stat, [data-theme="dark"] .compliance-workspace, [data-theme="dark"] .audit-result, [data-theme="dark"] .modal, [data-theme="dark"] .card { background: var(--surface); border-color: var(--border); }
+[data-theme="dark"] .modal input, [data-theme="dark"] .modal select, [data-theme="dark"] .modal textarea, [data-theme="dark"] .compliance-workspace textarea, [data-theme="dark"] #dash-audit-input { background: #110c18; color: var(--ink); border-color: var(--border); }
+[data-theme="dark"] .dash-layout { background: var(--bg); }
+[data-theme="dark"] .file-dropzone { background: #110c18; }
+[data-theme="dark"] .pill { background: #2a1f3d; color: #c99aff; }
+[data-theme="dark"] .outline { background: transparent; color: var(--ink); border-color: var(--border); }
+
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:90px}body{background:var(--bg);color:var(--ink);font-family:Inter,sans-serif;overflow-x:hidden;transition:background 0.3s, color 0.3s}a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer;border:0}.container{width:min(1200px,92%);margin:auto}
+.scroll-animate { opacity: 0; transform: translateY(35px); transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); will-change: opacity, transform; }
+.scroll-animate.active { opacity: 1; transform: translateY(0); }
+.delay-1 { transition-delay: 0.1s; }
+.delay-2 { transition-delay: 0.2s; }
+.delay-3 { transition-delay: 0.3s; }
+nav{height:76px;position:sticky;top:0;z-index:100;background:rgba(255,255,255,.94);backdrop-filter:blur(15px);border-bottom:1px solid var(--border)}.nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;gap:20px}.logo{font:800 23px Manrope,sans-serif;letter-spacing:-.8px}.logo span{color:var(--purple)}.logo small{display:block;font:800 9px Inter,sans-serif;letter-spacing:1.4px;color:#8a8191}.nav-links{display:flex;align-items:center;gap:26px;font-size:13px;color:#61566b}.nav-links a:hover{color:var(--purple)}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 19px;border-radius:12px;font-weight:700;font-size:13px;transition:.2s}.primary{background:var(--purple);color:white;box-shadow:0 8px 22px #8546d833}.primary:hover{background:var(--purple-dark);transform:translateY(-2px)}.outline{border:1px solid #e5dced;background:white;color:#2a2132}.hero{background:radial-gradient(ellipse at 85% 25%,#4d2475 0%,transparent 45%),linear-gradient(120deg,#100c17,#21102f);color:white;padding:90px 0 82px;overflow:hidden}.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}.eyebrow{font-size:11px;letter-spacing:2px;font-weight:800;color:#c99aff;text-transform:uppercase}h1,h2,h3{font-family:Manrope,sans-serif;letter-spacing:-1.4px}.hero h1{font-size:clamp(42px,6vw,70px);line-height:1.04;letter-spacing:-3px;margin:20px 0;max-width:700px}.hero p{color:#d4c9df;line-height:1.8;max-width:610px;font-size:16px}.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin:27px 0 18px}.hero-note{font-size:12px!important}.preview{background:white;color:#22182d;border-radius:22px;padding:23px;box-shadow:0 30px 90px #0006;transform:rotate(1deg)}.preview-top,.between{display:flex;justify-content:space-between;align-items:center;gap:15px}.preview-top{border-bottom:1px solid var(--border);padding-bottom:14px}.pill{display:inline-block;font-size:10px;font-weight:800;border-radius:99px;padding:6px 10px;background:#f1e9fa;color:#6735a4}.score{font:800 42px Manrope;color:#6e35b5;margin-top:5px}.mini-card,.feature,.panel,.price,.stat{background:white;border:1px solid var(--border);border-radius:16px;padding:19px;box-shadow:0 8px 28px #26123c08}.mini-card{background:var(--bg);margin-top:14px}.mini-card p{font-size:13px;color:var(--muted);margin:8px 0}.section{padding:86px 0}.section-heading{max-width:720px;margin-bottom:34px}.section h2{font-size:clamp(30px,4vw,45px);margin:10px 0 14px;line-height:1.12}.muted{color:var(--muted);line-height:1.75}.center{text-align:center;margin-left:auto;margin-right:auto}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.iconbox{width:42px;height:42px;border-radius:13px;background:var(--lav);color:#7136b5;display:grid;place-items:center;font-size:20px}.feature h3{font-size:17px;margin:16px 0 8px;letter-spacing:-.5px}.feature p{font-size:13px}.dark-section{background:#130d1b;color:white}.dark-section .muted{color:#c5b8d1}.steps{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-top:34px}.step{border-top:2px solid #b88be5;padding-top:16px}.step b{color:#c99aff;font-size:12px}.step h3{margin:10px 0;font-size:18px}.step p{font-size:12px}.sample-controls{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}.sample-controls button{border-radius:99px;padding:10px 14px;background:var(--lav);color:#6735a4;font-size:12px;font-weight:700}.sample-controls button.active{background:var(--purple);color:white}.sample-box{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}.price strong{font:800 30px Manrope;display:block;margin:15px 0 4px}.price ul{list-style:none;margin:18px 0;display:grid;gap:10px;font-size:13px}.price li:before{content:'✓';color:var(--purple);font-weight:800;margin-right:8px}.cta{background:linear-gradient(120deg,#21102f,#4b2372);color:white;border-radius:22px;padding:45px}.cta p{color:#ded1e9;margin:12px 0 22px}footer{background:#100b16;color:#c8bdcf;padding:45px 0}footer p{font-size:13px;line-height:1.8;margin-top:8px}.footer-grid{display:grid;grid-template-columns:1.2fr 1fr auto;gap:30px;align-items:center}.modal-backdrop{display:none;position:fixed;inset:0;background:#100b16bb;z-index:500;align-items:center;justify-content:center;padding:20px}.modal-backdrop.show{display:flex}.modal{width:min(480px,100%);background:var(--surface);border-radius:20px;padding:28px;position:relative}.modal h2{font-size:26px;margin-bottom:8px}.modal input,.modal select,.modal textarea{width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;margin:7px 0 14px}.modal label{font-size:12px;font-weight:700}.modal-close{position:absolute;right:18px;top:16px;background:var(--lav);border-radius:50%;width:32px;height:32px}.modal .btn{width:100%;margin-top:8px}.toast{display:none;margin-top:12px;padding:10px;border-radius:9px;background:#eaf8f0;color:#176b42;font-size:12px}@media(max-width:900px){.hero-grid{grid-template-columns:1fr}.grid4{grid-template-columns:repeat(2,1fr)}.steps{grid-template-columns:repeat(3,1fr)}.footer-grid{grid-template-columns:1fr 1fr}}@media(max-width:620px){.nav-links{display:none}.nav-inner{width:94%}.grid4,.grid3,.steps,.sample-box,.footer-grid{grid-template-columns:1fr}.hero{padding:62px 0}.cta{padding:28px}.between{align-items:flex-start;flex-direction:column}}
+.compliance-workspace{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:clamp(18px,3vw,30px);box-shadow:0 12px 35px #26123c0a}
+.compliance-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.compliance-workspace label{display:block;font-size:12px;font-weight:800;margin:0 0 8px}
+.compliance-workspace textarea{width:100%;min-height:150px;resize:vertical;border:1px solid var(--border);border-radius:12px;padding:13px;font:13px/1.65 Inter,sans-serif;background:var(--bg);color:var(--ink)}
+.compliance-workspace textarea:focus{outline:2px solid #d9c2f2;border-color:var(--purple)}
+.rule-help{font-size:11px;color:var(--muted);line-height:1.6;margin:8px 0 14px}
+.standard-chips{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 20px}
+.standard-chips span{background:var(--lav);color:var(--purple);border-radius:99px;padding:7px 10px;font-size:10px;font-weight:800}
+.audit-results{display:grid;gap:12px;margin-top:18px}
+.audit-result{border:1px solid var(--border);border-left:4px solid #c18a2e;border-radius:12px;padding:15px;background:var(--surface)}
+.audit-result.high{border-left-color:#bd4848}.audit-result.info{border-left-color:#6f8fc9}.audit-result.pass{border-left-color:#2c9564}
+.audit-result h4{font-size:14px;margin-bottom:6px}.audit-result p{font-size:12px;line-height:1.65;color:var(--muted);margin-top:5px}
+.audit-result .fix{color:#236d4b;background:#f0faf4;border-radius:8px;padding:9px 11px;margin-top:9px}
+.audit-summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.audit-summary span{font-size:11px;font-weight:800;padding:8px 11px;border-radius:99px;background:var(--bg)}
+@media(max-width:720px){.compliance-grid{grid-template-columns:1fr}}
+#app-dashboard { display: none; }
+.dash-layout { display: grid; grid-template-columns: 260px 1fr; min-height: calc(100vh - 76px); background: var(--bg); }
+.dash-sidebar { background: #130d1b; color: #fff; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; }
+.dash-sidebar a { display: block; padding: 10px 14px; border-radius: 8px; color: #c5b8d1; margin-bottom: 6px; font-size: 14px; font-weight: 500; }
+.dash-sidebar a:hover, .dash-sidebar a.active { background: #2a1f3d; color: #fff; }
+.dash-main { padding: 32px; overflow-y: auto; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 24px; }
+.file-dropzone { border: 2px dashed #b88be5; border-radius: 14px; padding: 32px; text-align: center; background: var(--bg); cursor: pointer; transition: 0.2s; }
+.file-dropzone:hover { border-color: var(--purple); }
+</style>
+</head>
+<body>
+<nav><div class="container nav-inner">
+<a href="#home" class="logo">verity<span>brand</span><small>BY CODE APEX</small></a>
+<div class="nav-links" id="public-nav"><a href="#features">Features</a><a href="#compliance">Compliance checker</a><a href="#how">How it works</a><a href="#pricing">Pricing</a></div>
+<div style="display:flex;gap:8px" id="auth-buttons">
+<button class="btn outline" onclick="toggleTheme()" title="Toggle Dark/Light Mode" style="padding: 8px 12px; border-radius: 50%; font-size: 16px;">🌓</button>
+<button class="btn outline" onclick="openModal('login')">Log in</button>
+<button class="btn primary" onclick="openModal('register')">Get started</button>
+</div>
+<div id="user-pill" style="display:none; align-items:center; gap:12px;">
+  <button class="btn outline" onclick="toggleTheme()" title="Toggle Dark/Light Mode" style="padding: 6px 10px; border-radius: 50%;">🌓</button>
+  <span id="welcome-user-text" style="font-size:13px; font-weight:600;"></span>
+  <button class="btn outline" style="padding:8px 14px; font-size:12px;" onclick="logoutUser()">Log out</button>
+</div>
+</div></nav>
+
+<div id="public-site">
+<header class="hero" id="home"><div class="container hero-grid">
+<div class="scroll-animate"><div class="eyebrow">✦ AI-powered brand governance</div><h1>Your Brand.<br>Your Voice.<br><span style="color:#c99aff">Always Verified.</span></h1>
+<p>Protect your brand identity, eliminate content inconsistencies, and verify every communication before it reaches the world — powered by intelligent AI.</p>
+<div class="hero-actions"><button class="btn primary" onclick="openModal('register')">Get Started Free →</button><a href="#features" class="btn outline" style="background:transparent;color:white;border-color:#ffffff55">Explore Platform</a></div>
+<p class="hero-note">✓ No complicated setup · ✓ Human-controlled approvals · ✓ Intelligent brand protection</p></div>
+<div class="preview scroll-animate delay-1"><div class="preview-top"><b>✦ Verity AI · Content Review</b><span class="pill">DEMO PREVIEW</span></div><div class="between" style="margin-top:18px"><div><small class="muted">Brand compliance score</small><div class="score">76<span style="font-size:16px">/100</span></div></div><div style="text-align:right"><span class="pill">Needs review</span><p class="muted" style="font-size:12px">3 issues identified</p></div></div><div class="mini-card"><b style="font-size:13px">Content being analysed</b><p>“Introducing our guaranteed number one solution...”</p><div class="between"><small class="muted">Advertisement · Demo</small><b style="color:#b45b35;font-size:12px">2 high risks</b></div></div><div class="mini-card"><b>✦ AI Guardian insight</b><p>Absolute promotional claims require approved supporting evidence.</p><span class="pill">Suggested correction available</span></div></div>
+</div></header>
+
+<section class="section"><div class="container"><div class="center scroll-animate" style="max-width:720px"><div class="eyebrow" style="color:#8546d8">One source of truth</div><h2>Built for Consistent, Trustworthy Communication.</h2><p class="muted">A single workspace to manage brand rules, verify content, and keep every team aligned.</p></div><div class="grid4" style="margin-top:34px">
+<div class="feature scroll-animate"><div class="iconbox">▦</div><h3>Content analyses</h3><p class="muted">Live workspace metrics and review activity.</p><small class="pill">Live data after sign in</small></div>
+<div class="feature scroll-animate delay-1"><div class="iconbox">⌕</div><h3>Brand issues</h3><p class="muted">Transparent risk detection and explanations.</p><small class="pill">Evidence-aware checks</small></div>
+<div class="feature scroll-animate delay-2"><div class="iconbox">✓</div><h3>Approved content</h3><p class="muted">Human-led decisions and controlled approvals.</p><small class="pill">Reviewer workflow</small></div>
+<div class="feature scroll-animate delay-3"><div class="iconbox">♧</div><h3>Organisations</h3><p class="muted">Workspace-level governance and team roles.</p><small class="pill">Role-aware access</small></div>
+</div></div></section>
+
+<section class="section dark-section" id="features"><div class="container"><div class="scroll-animate"><div class="eyebrow">The VerityBrand platform</div><h2>Everything Your Brand Needs.<br>Nothing You Don't.</h2><p class="muted" style="max-width:650px">One intelligent workspace to manage brand guidelines, verify content, identify inconsistencies, and maintain brand trust.</p></div><div class="grid4" style="margin-top:30px">
+<div class="feature scroll-animate" style="background:#21182b;border-color:#493458;color:white"><div class="iconbox">◆</div><h3>Brand Knowledge Hub</h3><p class="muted">Keep approved claims, voice, terminology, colours and brand rules together.</p></div>
+<div class="feature scroll-animate delay-1" style="background:#21182b;border-color:#493458;color:white"><div class="iconbox">⌕</div><h3>Intelligent Content Analysis</h3><p class="muted">Evaluate content against your organisation’s approved brand rules.</p></div>
+<div class="feature scroll-animate delay-2" style="background:#21182b;border-color:#493458;color:white"><div class="iconbox">✧</div><h3>AI-Powered Corrections</h3><p class="muted">Understand each issue and review practical correction suggestions.</p></div>
+<div class="feature scroll-animate delay-3" style="background:#21182b;border-color:#493458;color:white"><div class="iconbox">♧</div><h3>Human Review & Approval</h3><p class="muted">Keep authorised people in control of final publishing decisions.</p></div>
+</div></div></section>
+
+<section class="section"><div class="container"><div class="between scroll-animate"><div><div class="eyebrow" style="color:#8546d8">Content governance</div><h2>Every Piece of Content.<br>One Standard of Excellence.</h2><p class="muted">Choose a content type to preview how brand checks are presented.</p></div><button class="btn primary" onclick="openModal('register')">Try VerityBrand →</button></div>
+<div class="sample-controls scroll-animate" id="sample-controls"></div><div class="panel sample-box scroll-animate"><div><span class="pill" id="sample-category">Advertisement</span><h3 style="margin:15px 0 8px">Content preview</h3><p class="muted" id="sample-copy">Introducing our guaranteed number one solution.</p></div><div><h3>Example verification</h3><p class="muted">Checks include brand voice, terminology, approved claims, factual support, and readability. Results are advisory and depend on configured guidelines.</p><span class="pill">Illustrative preview</span></div></div></div></section>
+
+<section class="section" id="compliance">
+<div class="container">
+  <div class="section-heading scroll-animate">
+    <div class="eyebrow" style="color:#8546d8">Universal standards + your own rulebook</div>
+    <h2>Find the issue. Understand why. Get a practical fix.</h2>
+    <p class="muted">Every workspace starts with common ASCI advertising checks and WCAG 2.2 accessibility checks. Add your organisation's own policies, terminology, legal requirements and approval rules alongside them.</p>
+  </div>
+  <div class="grid3" style="margin-bottom:20px">
+    <article class="feature scroll-animate"><div class="iconbox">⚖</div><h3>ASCI advertising checks</h3><p class="muted">Flag potentially misleading or unsubstantiated claims, absolute superiority statements, guarantees, endorsements and promotional claims that may need evidence or clear disclosures.</p></article>
+    <article class="feature scroll-animate delay-1"><div class="iconbox">♿</div><h3>WCAG 2.2 accessibility checks</h3><p class="muted">Check supplied HTML for missing image alternatives, empty controls, vague link text and heading-structure issues. Full visual contrast and keyboard testing need the rendered page.</p></article>
+    <article class="feature scroll-animate delay-2"><div class="iconbox">▤</div><h3>Organisation-specific rules</h3><p class="muted">Add your own mandatory phrases, prohibited terms, tone rules, disclaimers, internal policies and sector-specific regulations.</p></article>
+  </div>
+  <div class="compliance-workspace scroll-animate">
+    <div class="between"><div><h3 style="font-size:22px">Try the compliance checker</h3><p class="muted" style="font-size:13px;margin-top:5px">Paste draft copy or HTML, add your custom rules, then run a combined review.</p></div><span class="pill">Interactive demo</span></div>
+    <div class="standard-chips"><span>ASCI · INDIA</span><span>WCAG 2.2 · ACCESSIBILITY</span><span>YOUR CUSTOM RULES</span></div>
+    <div class="compliance-grid">
+      <div><label for="audit-content">Content or HTML to review</label><textarea id="audit-content" placeholder="Paste an advertisement, website copy, email, social post, or HTML snippet here...">We are India's No. 1 product. Guaranteed results in 7 days! Click here to learn more.</textarea><p class="rule-help">For WCAG checks, paste HTML markup (including image, link, button and heading elements) where possible. Plain text supports only a limited review.</p></div>
+      <div><label for="audit-rules">Your organisation's custom rules</label><textarea id="audit-rules" placeholder="One rule per line. Examples:&#10;Never use the word cheap&#10;Must include Terms and Conditions apply&#10;Always use customers, never consumers&#10;Avoid aggressive or fear-based language"></textarea><p class="rule-help">Rules are applied in this browser for this demo. Connect an authenticated backend to manage approved rules centrally across your organisation.</p><button class="btn outline" type="butto
