@@ -1,0 +1,417 @@
+```react
+import React, { useState, useRef, useEffect } from 'react';
+import { 
+  ShieldCheck, 
+  Wand2,
+  FileText, 
+  Image as ImageIcon, 
+  Upload, 
+  AlertTriangle, 
+  CheckCircle2, 
+  XCircle,
+  Loader2,
+  ChevronRight,
+  Lightbulb,
+  Info
+} from 'lucide-react';
+
+// --- API Helper ---
+const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=";
+
+const fileToBase64 = (file) => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = () => {
+    // Extract just the base64 data portion
+    const base64Data = reader.result.split(',')[1];
+    resolve(base64Data);
+  };
+  reader.onerror = error => reject(error);
+});
+
+export default function VerityBrandApp() {
+  const [inputMode, setInputMode] = useState('text'); // 'text' or 'image'
+  const [textContent, setTextContent] = useState('VerityBrand is guaranteed to increase enterprise efficiency by 500% with zero setup time. Our AI solution operates with 100% accuracy and completely eliminates all human errors in corporate communications. Ensure your team signs up immediately for our standard package at discount rates!');
+  
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
+  
+  const [isScanning, setIsScanning] = useState(false);
+  const [scanResult, setScanResult] = useState(null);
+  const [error, setError] = useState(null);
+
+  const fileInputRef = useRef(null);
+
+  // Cleanup object URLs to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
+    };
+  }, [imagePreviewUrl]);
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      setImagePreviewUrl(URL.createObjectURL(file));
+      setScanResult(null);
+      setError(null);
+    }
+  };
+
+  const handleRunAudit = async () => {
+    if (inputMode === 'text' && !textContent.trim()) {
+      setError("Please enter some text to audit.");
+      return;
+    }
+    if (inputMode === 'image' && !imageFile) {
+      setError("Please upload an image to audit.");
+      return;
+    }
+
+    setIsScanning(true);
+    setScanResult(null);
+    setError(null);
+
+    try {
+      const parts = [];
+      const systemPrompt = `You are a strict, professional brand compliance auditor for an enterprise tool named 'VerityBrand'. 
+Your job is to analyze the provided marketing copy or image. 
+Check for the following violations:
+1. ASCI Regulations (Factual Claims): Flag any unsupported promotional claims, superlatives without proof (e.g., '100% guaranteed', 'Best', 'Number 1').
+2. WCAG Accessibility: Flag poor text contrast (if analyzing an image), missing context, or non-descriptive links (e.g., 'click here').
+3. Brand Tone & Voice: Flag hyperbole, aggressive sales tactics, or unprofessional language.
+
+Return ONLY a JSON array. DO NOT return markdown formatting. Provide an array of objects.`;
+
+      parts.push({ text: systemPrompt });
+
+      if (inputMode === 'text') {
+        parts.push({ text: `Analyze the following text draft:\n\n${textContent}` });
+      } else if (inputMode === 'image') {
+        const base64Data = await fileToBase64(imageFile);
+        parts.push({
+          inlineData: {
+            mimeType: imageFile.type,
+            data: base64Data
+          }
+        });
+        parts.push({ text: "Analyze the text, layout, and visual elements in this image for brand compliance." });
+      }
+
+      const payload = {
+        contents: [{ role: "user", parts }],
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: "ARRAY",
+            items: {
+              type: "OBJECT",
+              properties: {
+                id: { type: "INTEGER" },
+                category: { type: "STRING", description: "e.g., Factual & Claims, Tone & Voice, Accessibility" },
+                type: { type: "STRING", description: "Short issue type name" },
+                rule: { type: "STRING", description: "The specific rule violated (e.g., ASCI Regulation 1.4)" },
+                flaggedText: { type: "STRING", description: "The exact text or description of the visual element flagged" },
+                explanation: { type: "STRING", description: "Why this is an issue" },
+                suggestion: { type: "STRING", description: "A compliant alternative" }
+              },
+              required: ["id", "category", "type", "rule", "flaggedText", "explanation", "suggestion"]
+            }
+          }
+        }
+      };
+
+      const response = await fetch(GEMINI_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.candidates && data.candidates[0].content.parts[0].text) {
+        const jsonStr = data.candidates[0].content.parts[0].text;
+        const issues = JSON.parse(jsonStr);
+        
+        // Calculate dynamic brand score based on severity/number of issues
+        // Start at 100, deduct 12 points per issue
+        const calculatedScore = Math.max(0, 100 - (issues.length * 12));
+        
+        setScanResult({
+          score: calculatedScore,
+          issues: issues
+        });
+      } else {
+        throw new Error("Failed to parse response from AI. Please try again.");
+      }
+    } catch (err) {
+      console.error(err);
+      setError(err.message || "An unexpected error occurred during the audit.");
+    } finally {
+      setIsScanning(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-purple-500/30">
+      
+      {/* Header */}
+      <header className="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-purple-900/40 px-6 py-4 flex items-center justify-between shadow-lg">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/20">
+            <ShieldCheck className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl font-bold tracking-tight text-white">
+                Verity<span className="text-purple-400">Brand</span>
+              </h1>
+              <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                Live AI Platform
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-400 font-medium tracking-wide">TEAM CODE APEX • DYNAMIC AUDITOR</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-xs font-semibold text-slate-300">
+            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+            Gemini API Connected
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        {/* Left Column: Input Sandbox */}
+        <div className="lg:col-span-5 flex flex-col gap-6">
+          
+          <div className="bg-slate-900/50 border border-purple-900/30 rounded-2xl p-6 shadow-xl backdrop-blur-sm flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                <Wand2 className="w-5 h-5 text-purple-400" />
+                Content Sandbox
+              </h2>
+              
+              {/* Input Mode Toggle */}
+              <div className="flex items-center bg-slate-950 p-1 rounded-lg border border-slate-800">
+                <button
+                  onClick={() => setInputMode('text')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+                    inputMode === 'text' ? 'bg-purple-600 text-white' : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  <FileText className="w-3.5 h-3.5" /> Text
+                </button>
+                <button
+                  onClick={() => setInputMode('image')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+                    inputMode === 'image' ? 'bg-purple-600 text-white' : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  <ImageIcon className="w-3.5 h-3.5" /> Image
+                </button>
+              </div>
+            </div>
+
+            {/* Dynamic Input Area */}
+            {inputMode === 'text' ? (
+              <textarea
+                value={textContent}
+                onChange={(e) => setTextContent(e.target.value)}
+                className="w-full h-64 bg-slate-950/80 border border-slate-800 rounded-xl p-4 text-sm text-slate-200 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all resize-none"
+                placeholder="Paste marketing copy, press releases, or social drafts here..."
+              />
+            ) : (
+              <div className="w-full h-64 bg-slate-950/80 border border-slate-800 border-dashed rounded-xl flex flex-col items-center justify-center relative overflow-hidden group hover:border-purple-500/50 transition-colors">
+                {imagePreviewUrl ? (
+                  <>
+                    <img src={imagePreviewUrl} alt="Preview" className="w-full h-full object-contain p-2" />
+                    <div className="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <button onClick={() => fileInputRef.current?.click()} className="px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm font-semibold hover:bg-slate-800">
+                        Replace Image
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center text-slate-400 cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                    <Upload className="w-8 h-8 mb-3 text-slate-500 group-hover:text-purple-400 transition-colors" />
+                    <p className="text-sm font-semibold text-slate-300">Click to upload marketing asset</p>
+                    <p className="text-xs mt-1">Supports PNG, JPG, WebP</p>
+                  </div>
+                )}
+                <input 
+                  type="file" 
+                  ref={fileInputRef}
+                  className="hidden" 
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                />
+              </div>
+            )}
+
+            {/* Error Message */}
+            {error && (
+              <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-lg flex items-start gap-2 text-rose-400 text-xs">
+                <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+                <p>{error}</p>
+              </div>
+            )}
+
+            {/* Action Button */}
+            <button
+              onClick={handleRunAudit}
+              disabled={isScanning}
+              className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-purple-600/25 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {isScanning ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Analyzing via Gemini AI...
+                </>
+              ) : (
+                <>
+                  Run End-to-End Brand Audit <ChevronRight className="w-5 h-5" />
+                </>
+              )}
+            </button>
+          </div>
+
+        </div>
+
+        {/* Right Column: Dynamic Output */}
+        <div className="lg:col-span-7 flex flex-col gap-6">
+          
+          {!scanResult && !isScanning ? (
+            <div className="flex-1 bg-slate-900/30 border border-slate-800/50 border-dashed rounded-2xl flex flex-col items-center justify-center p-12 text-center text-slate-500">
+              <div className="w-16 h-16 bg-slate-900 rounded-full flex items-center justify-center mb-4">
+                <ShieldCheck className="w-8 h-8 text-slate-700" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-300 mb-2">Awaiting Content</h3>
+              <p className="max-w-sm text-sm">Input your text or upload an image and click "Run End-to-End Brand Audit" to dynamically generate governance insights using the Gemini API.</p>
+            </div>
+          ) : isScanning ? (
+            <div className="flex-1 bg-slate-900/30 border border-purple-900/30 rounded-2xl flex flex-col items-center justify-center p-12 text-center relative overflow-hidden">
+              {/* Animated scanning background */}
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/10 to-transparent w-full h-[200%] animate-[scan_3s_linear_infinite]"></div>
+              
+              <Loader2 className="w-12 h-12 text-purple-500 animate-spin mb-4 relative z-10" />
+              <h3 className="text-lg font-bold text-white mb-2 relative z-10">Gemini is Auditing...</h3>
+              <p className="text-sm text-slate-400 max-w-sm relative z-10">
+                Checking against ASCI Regulations, WCAG 2.2 Standards, and internal Brand Tone guidelines.
+              </p>
+            </div>
+          ) : (
+            <div className="bg-slate-900/50 border border-purple-900/30 rounded-2xl shadow-xl backdrop-blur-sm flex flex-col overflow-hidden">
+              
+              {/* Results Header / Scorecard */}
+              <div className="p-6 border-b border-purple-900/40 bg-[#0c0916]/50 flex items-center justify-between">
+                <div>
+                  <h2 className="text-xl font-bold text-white mb-1">AI Audit Report</h2>
+                  <p className="text-xs text-slate-400 flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> Analysis Complete
+                  </p>
+                </div>
+                
+                <div className="flex items-center gap-4">
+                  <div className="text-right">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Brand Score</p>
+                    <div className="flex items-baseline gap-1">
+                      <span className={`text-3xl font-black ${
+                        scanResult.score >= 80 ? 'text-emerald-400' : scanResult.score >= 50 ? 'text-amber-400' : 'text-rose-500'
+                      }`}>
+                        {scanResult.score}
+                      </span>
+                      <span className="text-sm text-slate-500">/100</span>
+                    </div>
+                  </div>
+                  
+                  {/* Status Badge */}
+                  <div className={`px-4 py-3 rounded-xl border ${
+                    scanResult.score >= 80 ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' :
+                    scanResult.score >= 50 ? 'bg-amber-500/10 border-amber-500/20 text-amber-400' :
+                    'bg-rose-500/10 border-rose-500/20 text-rose-400'
+                  }`}>
+                    <div className="flex items-center gap-2 font-bold text-sm">
+                      {scanResult.score >= 80 ? <CheckCircle2 className="w-5 h-5" /> : <AlertTriangle className="w-5 h-5" />}
+                      {scanResult.score >= 80 ? 'Publish Ready' : scanResult.score >= 50 ? 'Needs Review' : 'High Risk'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Dynamic Issues List */}
+              <div className="p-6 overflow-y-auto max-h-[600px] flex flex-col gap-4">
+                {scanResult.issues.length === 0 ? (
+                  <div className="text-center py-10 bg-emerald-500/5 border border-emerald-500/20 rounded-xl">
+                    <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
+                    <h3 className="text-emerald-400 font-bold text-lg">Perfect Compliance!</h3>
+                    <p className="text-sm text-emerald-500/70 mt-1">No violations found in this content.</p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">
+                        Identified Violations ({scanResult.issues.length})
+                      </h3>
+                    </div>
+                    
+                    {scanResult.issues.map((issue, idx) => (
+                      <div key={idx} className="bg-slate-950 border border-slate-800 rounded-xl p-5 hover:border-purple-500/40 transition-colors">
+                        
+                        <div className="flex flex-wrap justify-between items-start gap-2 mb-3">
+                          <span className="px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                            {issue.category}
+                          </span>
+                          <span className="text-[10px] font-mono text-slate-400 flex items-center gap-1 bg-slate-900 px-2 py-1 rounded border border-slate-800">
+                            <Info className="w-3 h-3" /> {issue.rule}
+                          </span>
+                        </div>
+                        
+                        <h4 className="font-bold text-rose-400 text-sm mb-2">{issue.type}</h4>
+                        
+                        <div className="bg-rose-500/5 border border-rose-500/10 rounded-lg p-3 mb-3">
+                          <p className="text-xs text-rose-300/80 font-medium mb-1">Flagged Element:</p>
+                          <p className="text-sm text-rose-200 font-mono">"{issue.flaggedText}"</p>
+                        </div>
+                        
+                        <p className="text-sm text-slate-300 leading-relaxed mb-4">
+                          {issue.explanation}
+                        </p>
+                        
+                        <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3 flex items-start gap-3">
+                          <Lightbulb className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+                          <div>
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-500 mb-1">Suggested Correction</p>
+                            <p className="text-sm text-emerald-300 font-medium">{issue.suggestion}</p>
+                          </div>
+                        </div>
+
+                      </div>
+                    ))}
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
+        </div>
+      </main>
+
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes scan {
+          0% { transform: translateY(-100%); }
+          100% { transform: translateY(100%); }
+        }
+      `}} />
+    </div>
+  );
+}
+```
