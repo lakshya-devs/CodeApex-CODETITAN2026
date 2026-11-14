@@ -1,156 +1,86 @@
-VerityBrand — Brand Governance & Content Compliance Platform
+# VerityBrand — Supabase + Groq + Netlify
 
-VerityBrand is a browser-based brand governance prototype designed to help teams review marketing content, identify potential compliance risks, maintain consistent brand language, and coordinate campaign approvals from one workspace.
-Built for the hackathon by Code Apex.
+This build keeps the existing VerityBrand interface and Supabase email-OTP authentication. AI requests are sent to a Netlify Function, which verifies the signed-in Supabase user and calls Groq server-side. The Groq API key is never exposed in the browser.
 
-https://veritybrand.netlify.app
+## Step-by-Step API & Deployment Instructions
 
-Overview
+### 1. Extract and Structure
 
-Marketing teams publish content across advertisements, websites, social media, email campaigns, and other channels. Keeping every asset accurate, accessible, and consistent with an organisation's brand guidelines can be difficult.
-VerityBrand brings several parts of that review process into one interface. Users can check written content, inspect uploaded assets, record evidence for advertising claims, compare campaign materials, and document human review decisions.
-The current repository version is implemented as a single HTML file with embedded CSS and JavaScript. It is a working prototype, not a production-certified compliance service.
+Extract this project into your local project directory. Make sure your folder structure matches Netlify's expected layout:
 
-Key Features
-1. Content compliance checker
-Review pasted advertising copy, website text, social captions, email copy, and HTML snippets.
-Flag selected advertising claims and potentially misleading wording.
-Run checks for selected Hindi and Hinglish expressions as well as English wording.
-Apply sector-specific rules for general content, health and wellness, finance and investments, food and beverage, and education and coaching.
-Review basic HTML accessibility indicators, such as missing image alternative text, empty buttons, and vague link wording.
-Display findings with risk levels, explanations, and suggested corrective actions.
-2. Brand Knowledge Hub
-Configure the expected brand wordmark text.
-Record approved brand colours.
-Define required phrases and prohibited terms.
-Apply saved brand-language settings during supported content and asset checks.
-3. File and asset inspection
-Upload supported image files and use OCR to extract readable text.
-Extract text from PDFs and inspect it against configured brand and content rules.
-Inspect text and HTML files.
-Identify possible claim, wording, and brand-rule issues in extracted text.
-Sample image colours and compare them with the configured brand palette. This is a supporting signal, not a complete visual identity or design audit.
-4. Campaign pre-flight review
-Add multiple campaign assets to a single review.
-Extract text from supported image, PDF, DOCX, TXT, and HTML files.
-Compare detected prices, discounts, dates, and promotional codes across assets.
-Check for required and prohibited brand phrases across the campaign.
-Produce a campaign readiness report that can be printed or saved as a PDF through the browser's print dialog.
-5. Claim Evidence Register
-Record claims such as product rankings or price comparisons.
-Add a supporting reference and evidence dates.
-Track whether evidence is recorded, missing, or expired.
-Use registered evidence status as an input to relevant claim checks.
-6. Review and approval workflow
-Record reviewer comments and decisions.
-Track approval, revision-request, and version-history events in the prototype workspace.
-Keep final publishing decisions with a human reviewer.
-7. Campaign and monitoring workspace
-Create and track campaigns, owners, due dates, and status.
-View scan activity in a risk heatmap.
-Re-check previously approved content when configured rules or evidence change.
-Review sample monitoring and dashboard information provided for demonstration.
-8. Additional interface features
-Responsive landing page and dashboard layouts.
-Light and dark themes.
-Email one-time-password (OTP) authentication through Supabase when configured.
-A temporary judge-demo entry option for hackathon presentations.
-
-Technology Stack
-Technology / Library
-Purpose
-HTML5
-Page structure and interface components
-CSS3
-Layout, styling, responsive design, and themes
-JavaScript
-Client-side interactions, rule checks, and workspace logic
-Supabase JavaScript SDK v2
-Optional authentication and scan-history integration
-Tesseract.js
-OCR for supported image and scanned-document workflows
-PDF.js
-PDF text extraction and page rendering
-Mammoth.js
-DOCX text extraction in campaign pre-flight review
-Google Fonts (Inter and Manrope)
-Typography
-There is no separate React application or Python/FastAPI server in the current HTML file.
-Getting Started
-
-Requirements
-A modern web browser.
-Internet access for the externally hosted libraries and fonts used by the page.
-Python installed only if you choose to run the optional local development server shown below.
-Run locally
-Clone or download this repository.
-Keep VerityBrand_dashboard_v4_preflight.html in the project folder. You may rename it to index.html if you prefer a shorter entry-page name.
-Open a terminal in that folder and start a local web server:
-python -m http.server 5500
-Open the following address in your browser:
-http://localhost:5500/VerityBrand_dashboard_v4_preflight.html
-If you renamed the file to index.html, use http://localhost:5500/ instead.
-You can also open the HTML file directly in a browser for a quick preview. Running it through a local server is recommended for a more consistent browser experience.
-
-Supabase Configuration
-The HTML file contains a VERITYBRAND_SUPABASE_CONFIG object for the Supabase project URL and browser publishable key. To connect the app to your own Supabase project, update that object in the HTML file:
-window.VERITYBRAND_SUPABASE_CONFIG = {
-  url: "YOUR_SUPABASE_PROJECT_URL",
-  anonKey: "YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY" ( It's used from Mailjet primarily, as it's paid to manually send mails )
-};
-For real account authentication and workspace data:
-Create a Supabase project.
-Configure the Email OTP provider and the allowed site/redirect URLs in Supabase Authentication settings.
-Create the database tables and relationships used by the application, including profiles, organisation_members, and organisations.
-Configure the required Row Level Security (RLS) policies so users can access only the records they are permitted to access.
-Create the optional scan_results table if you want authenticated scan history to sync with Supabase. The HTML source includes an example table definition and an owner-scoped RLS policy in a code comment.
-Database setup note: This repository version does not include a complete Supabase SQL migration or setup script. In particular, the profile and organisation tables/policies must be created and tested in your Supabase project before relying on real user accounts.
-Security note: A browser application may use a Supabase publishable/anon key, but it must never contain a Supabase service_role key, database password, SMTP credential, or other server secret. Enable and test RLS before storing real user or business information.
-Demo Access
-The current source includes a temporary Judge Demo access option to make the workspace easier to demonstrate during a hackathon. This option is enabled by the VB_JUDGE_DEMO_ENABLED setting in the JavaScript.
-Demo access does not verify a real user account.
-Demo workspace actions and sample records are intended for demonstration.
-Do not use the demo mode to protect confidential information.
-Disable the demo option before using the site as a real authenticated service.
-How the Review Engine Works
-The current content review engine uses JavaScript rule matching and configured checks. It looks for selected phrases, claim patterns, disclosure wording, accessibility signals in supplied HTML, and organisation-defined brand rules. It then displays matching findings and suggested actions.
-Image and document workflows extract readable text in the browser using OCR or document-parsing libraries before applying supported checks. Some scan-history information can be saved in the browser, and authenticated scan records can optionally be synchronised with Supabase.
-Implementation clarification: Although the product is presented as an AI-powered brand governance concept, the supplied HTML version does not currently make a call to Gemini or another generative AI model. Its current findings and recommendations are produced by predefined rules and pattern matching. A future AI service could extend this engine, but it should not be represented as part of the current implementation unless that integration is added.
-Current Scope and Limitations
-VerityBrand is intended to support reviewers, not replace legal, accessibility, or brand approval processes.
-Not legal certification: The checks are limited rule-based indicators. They do not certify compliance with the ASCI Code, advertising laws, or sector regulations.
-Limited accessibility checks: The prototype checks selected signals in supplied text or HTML. It does not perform a complete WCAG 2.2 audit, including full keyboard, screen-reader, focus, or rendered colour-contrast testing.
-OCR limitations: OCR may miss small, stylised, low-resolution, or image-only text. The current OCR language configuration is English.
-Document limits: Some PDF workflows inspect only a limited number of pages. Campaign pre-flight and the single-file inspection flow have different extraction limits.
-Live website access: Browser security and CORS restrictions can prevent the Live Content Audit from reading a URL. Pasting the page text/HTML is the fallback. A crawl proxy is not configured by default.
-Human review remains essential: Image layout, logo artwork, claim substantiation, disclaimers, offer conditions, and the final published creative must be checked by a person.
-Demo data: Some dashboard, monitoring, and review views contain pre-filled example records for presentation purposes.
-Local browser storage: Campaigns, custom rules, review information, and other prototype state may be stored in the current browser. Browser-local data is not automatically shared between users or devices.
-Treat every finding as a prompt for review, not as a final legal or publishing decision.
-Suggested Repository Structure
-The current prototype can be kept as a single file. As the project grows, the code could be organised into separate files like this:
-VerityBrand/
+```text
+your-project-folder/
+├── index.html
+├── netlify.toml
 ├── README.md
-├── VerityBrand_dashboard_v4_preflight.html
-├── assets/
-│   ├── images/
-│   └── screenshots/
-├── docs/
-│   └── architecture.md
-└── supabase/
-    └── migrations/
-The folders shown above are a suggested future structure; they are not all included in the current prototype.
-Future Enhancements
-Integrate a generative AI service for context-aware explanations and rewrite suggestions.
-Add complete and version-controlled Supabase schema migrations and RLS policies.
-Move shared campaign, review, evidence, and brand-rule data into a structured backend.
-Add a secure server-side website crawling service for URLs that block browser access.
-Expand accessibility checks with automated tools and manual testing workflows.
-Add more languages, OCR models, file formats, and sector-specific rule sets.
-Add automated tests, error monitoring, and production deployment configuration.
+└── netlify/
+    └── functions/
+        └── ai-compliance.mjs
+```
 
-Project
-Live Demo: https://veritybrand.netlify.app
-VerityBrand — Brand Governance and Content Compliance Platform
-Hackathon Team: Code Apex
-VerityBrand helps teams move from fragmented content checks to a more consistent review process—bringing brand rules, claim evidence, campaign checks, and human approval into one workspace.
+### 2. Create a Groq API key
+
+1. Open https://console.groq.com/keys and sign in.
+2. Create an API key and copy it once.
+3. Keep it private. Do not put it in `index.html`, GitHub, or a public `.env` file.
+
+### 3. Configure Netlify Environment Variables
+
+To unlock full YouTube metadata extraction, Instagram oEmbed captions, and Groq AI vision screening, log into your **Netlify Dashboard**, navigate to **Site configuration → Environment variables**, and add the following keys:
+
+| Variable | Required? | Purpose |
+|---|---|---|
+| `GROQ_API_KEY` | **Required** | Your Groq Console API key — used server-side to run the Qwen vision/text compliance screening model. |
+| `SUPABASE_URL` | **Required** | `https://ujsimpojdvptubcycizp.supabase.co` — used to validate the signed-in user's access token. |
+| `SUPABASE_ANON_KEY` | **Required** | Your Supabase publishable (anon) key. |
+| `GROQ_MODEL` | Optional | Defaults to `qwen/qwen3.8-27b`. |
+| `YOUTUBE_API_KEY` | Optional / Recommended | Generated from the Google Cloud Console with **YouTube Data API v3** enabled. Allows deep extraction of video descriptions and tags. Without it, YouTube link review falls back to basic oEmbed title/author + thumbnail only. |
+| `META_OEMBED_TOKEN` | Optional / Recommended | A Meta Developer App token with **oEmbed Read** permissions, used to extract public Instagram reel and post captions. Without it, Instagram link review cannot proceed — upload a screenshot/screen-recording instead. |
+
+Save the variables and deploy (or redeploy) the project — environment-variable changes require a new deploy before they apply to functions.
+
+### 4. Deploy to Netlify
+
+- **Via Git:** Commit the extracted files to your GitHub repository and push to your connected Netlify branch. Netlify will automatically build and publish your site using the provided `netlify.toml` configuration.
+- **Via Netlify CLI:** Run the following from the project folder (make sure the CLI is linked to the correct `veritybrand` site first):
+
+  ```bash
+  netlify deploy --prod
+  ```
+
+### 5. Supabase settings
+
+The supplied Supabase URL and publishable key are already configured in `index.html` for the browser client. The same values must also be entered in Netlify environment variables (Step 3) because the serverless function uses them to validate the signed-in user's access token.
+
+In **Supabase Dashboard → Authentication → URL Configuration**, add your deployed Netlify URL to **Site URL** and **Redirect URLs**. Confirm **Email OTP** is enabled. Keep Row Level Security enabled on tables containing user or organisation data. Never use a `service_role` key in the browser.
+
+### 6. Configure Your Brand Rules in the UI
+
+Once live:
+
+1. Open your deployed VerityBrand dashboard and sign in.
+2. Navigate to the **Brand Knowledge Hub** tab in the sidebar.
+3. Fill out your organisation's custom **Prohibited terms / phrases** and **Required disclaimer / phrases**.
+4. Click **Save visual rules** so the browser saves them to local storage, allowing the AI compliance engine to strictly enforce them on your next scan.
+
+### 7. Verify the deployment
+
+Open `https://YOUR-SITE.netlify.app/.netlify/functions/ai-compliance`. A successful GET response should look like:
+
+```json
+{"ok":true,"model":"qwen/qwen3.8-27b","status":"Groq configured · server-side API key detected"}
+```
+
+This checks that the server-side key is present; it does not make a paid or live inference request. The POST endpoint requires a valid signed-in Supabase session.
+
+## Supported analysis path and limitations
+
+The existing browser-side extractors prepare pasted text, common images, PDF pages, DOCX text and embedded pictures, PPTX text and embedded pictures, and sampled video frames. These extracted text/images are sent to Groq through the Netlify Function. Groq vision supports up to three images per request; if more are supplied, only the first three are reviewed and the response includes a limitation. The current model accepts image + text inputs; PDFs and Office documents are processed by browser extraction, not uploaded as native document files. Video review is based on sampled frames; video audio is not transcribed in this build. Public YouTube/Instagram link review is metadata/thumbnail-based and does not constitute full-video review.
+
+## Model, limits and privacy
+
+Default model: `qwen/qwen3.8-27b`. Model availability, rate limits and quotas depend on your Groq account and can change. Check https://console.groq.com/docs/models, https://console.groq.com/docs/vision and https://console.groq.com/docs/rate-limits. Groq is fast but does not guarantee zero waiting, unlimited free requests, or uninterrupted availability.
+
+## Local development
+
+Install the Netlify CLI and run `netlify dev` from this project folder. Set `GROQ_API_KEY`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and (optionally) `YOUTUBE_API_KEY` / `META_OEMBED_TOKEN` in your local Netlify environment before testing. Never commit a real `.env` file.
