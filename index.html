@@ -187,6 +187,7 @@ nav{border-bottom-color:var(--border)}
 #human-decision-status{display:none}
 .dash-results-head{display:flex;align-items:center;gap:10px}
 @media(max-width:820px){.dash-layout{grid-template-columns:1fr}.dash-sidebar a span{white-space:normal}.dash-sidebar{padding:16px;gap:12px}.dash-sidebar nav,.dash-side-links{display:grid;grid-template-columns:1fr 1fr;gap:6px}.dash-sidebar a{margin:0}}
+@media(max-width:620px){.user-meta small{display:none}}
 @media(max-width:620px){.user-meta{display:none}.nav-right{gap:6px}.vb-lang-sel{max-width:96px!important;font-size:11px!important;padding:7px 6px!important}#auth-buttons{gap:5px!important}#auth-buttons .btn{padding:8px 10px;font-size:12px}#user-pill{gap:6px}#user-pill .btn{padding:8px 10px!important}.logo small{display:none}#auth-buttons .btn.primary,#user-avatar{display:none}.logo{font-size:20px}.logo-mark{width:30px!important;height:28px!important}.logo-lockup{gap:7px!important}.logo-lockup .logo{font-size:18px!important}.logo-lockup .logo-copy small{display:none!important}.vb-lang-sel{max-width:88px!important}}
 
 /* ===== Refined authentication experience ===== */
@@ -703,7 +704,7 @@ nav{border-bottom-color:var(--border)}
           <section class="card"><div class="between"><div><h3>Workspace pulse</h3><p class="muted vb-sub">A quick health check</p></div><span class="vb-live-dot">LIVE</span></div><div class="vb-pulse"><div><span>Campaign completion</span><b id="vb-completion-label">0%</b></div><div class="vb-track"><i id="vb-completion-bar"></i></div><p class="muted vb-sub" id="vb-pulse-copy">Create your first campaign to start tracking progress.</p></div><div class="vb-tip"><b>✧ Pro tip</b><p>Run a content scan before sending a campaign for approval. Catch issues early and keep your brand consistent.</p><button class="btn outline" onclick="switchTabById('analyze-tab')">Open analyzer →</button></div></section>
         </div>
         <div class="vb-overview-grid vb-insights">
-          <section class="card"><div class="between"><div><h3>Top violated guidelines</h3><p class="muted vb-sub">Rules flagged most often across scans</p></div><span class="vb-live-dot">LIVE</span></div><div id="vb-top-guidelines" style="margin-top:16px"></div><p class="vb-note">Counts update each time you run a content scan.</p></section>
+          <section class="card"><div class="between"><div><h3>Top violated guidelines</h3><p class="muted vb-sub">Rules flagged most often across scans</p></div><span class="vb-live-dot">LIVE</span></div><div id="vb-top-guidelines" style="margin-top:16px"></div><p class="vb-note">Seeded with sample data. Counts increase each time you run a content scan.</p></section>
           <section class="card"><div class="between"><div><h3>Most common flagged terms</h3><p class="muted vb-sub">Phrases that trigger reviews</p></div></div><ol id="vb-top-terms" class="vb-term-list" style="margin-top:16px"></ol></section>
         </div>
         <section class="card vb-shortcuts"><div><div class="eyebrow accent">MOVE FASTER</div><h3>Quick actions</h3></div><button class="vb-shortcut" onclick="switchTabById('analyze-tab')"><span>⌕</span><b>Scan content</b><small>Check copy and HTML</small></button><button class="vb-shortcut" onclick="switchTabById('files-tab')"><span>↥</span><b>Upload creative</b><small>Inspect an image or file</small></button><button class="vb-shortcut" onclick="switchTabById('human-tab')"><span>◎</span><b>Review approvals</b><small>Company sign-off</small></button><button class="vb-shortcut" onclick="switchTabById('hub-tab')"><span>▤</span><b>Brand guidelines</b><small>Manage your rules</small></button></section>
@@ -798,9 +799,27 @@ nav{border-bottom-color:var(--border)}
             <p class="muted" style="font-size:12px;">Supports images, PDF, DOCX, PPTX, short videos (MP4, MOV, WebM), TXT and HTML (max 25 MB). OCR and AI extract text and check saved brand rules.</p>
             <input type="file" id="hidden-file-input" accept="image/png,image/jpeg,image/webp,image/gif,application/pdf,text/plain,text/html,video/mp4,video/quicktime,video/webm,.mp4,.mov,.m4v,.webm,.md,.json,.docx,.pptx,.csv,.tsv" style="display:none" onchange="handleFileUpload(event)">
           </div>
-          <div class="vb-sector-row" style="gap:10px;align-items:end;flex-wrap:wrap;margin-top:14px"><input id="vb-link-input" type="url" placeholder="Or paste a public YouTube / Instagram link" style="flex:1;min-width:220px" aria-label="YouTube or Instagram link"><button class="btn outline" type="button" onclick="vbAnalyzeLink()">Analyse link</button></div>
+          <div class="vb-sector-row" style="gap:10px;align-items:end;flex-wrap:wrap;margin-top:14px"><input id="vb-link-input" type="url" placeholder="Or paste a public Instagram, YouTube or X post link" style="flex:1;min-width:220px" aria-label="Instagram, YouTube or X link"><button class="btn outline" type="button" onclick="vbAnalyzeLink()">Analyse link</button></div>
           <div id="uploaded-file-info" style="margin-top:16px;"></div>
         </div>
+        <section class="card" id="vb-nvidia-video-section" style="margin-top:20px;border:1px solid var(--border)">
+          <div class="between" style="gap:14px;flex-wrap:wrap">
+            <div><span class="pill">NVIDIA VIDEO REVIEW</span><h3 style="margin:10px 0 4px">Dedicated video compliance analysis</h3><p class="muted" style="font-size:13px;margin:0">Separate from the Groq text/image analyzer. Upload an MP4, MOV or WebM video for NVIDIA-powered visual frame review.</p></div>
+            <span class="vb-live-dot">NVIDIA COSMOS</span>
+          </div>
+          <div class="file-dropzone" style="margin-top:16px" onclick="document.getElementById('vb-nvidia-video-input').click()">
+            <div class="dz-icon">▶</div><h3>Choose a video for NVIDIA review</h3>
+            <p class="muted" style="font-size:12px">MP4, MOV or WebM · maximum 25 MB · samples up to 12 frames across the clip</p>
+            <input id="vb-nvidia-video-input" type="file" accept="video/mp4,video/quicktime,video/webm,.mp4,.mov,.m4v,.webm" style="display:none" onchange="vbNvidiaVideoSelected(event)">
+          </div>
+          <div id="vb-nvidia-video-selected" class="muted" role="status" style="margin-top:10px">No video selected.</div>
+          <div class="vb-sector-row" style="margin-top:12px;gap:10px;align-items:end;flex-wrap:wrap">
+            <div><label for="vb-nvidia-video-sector">Sector rule pack</label><select id="vb-nvidia-video-sector"><option value="general">General</option><option value="health">Health &amp; wellness</option><option value="finance">Finance &amp; investments</option><option value="food">Food &amp; beverage</option><option value="education">Education &amp; coaching</option></select></div>
+            <button class="btn primary" id="vb-nvidia-video-run" type="button" onclick="vbRunNvidiaVideo()" disabled>Analyse video with NVIDIA →</button>
+          </div>
+          <p class="vb-fine" style="margin-bottom:0">Video is sampled into timestamped contact sheets in your browser and sent to NVIDIA as images. This dedicated flow does not transcribe audio or review every frame. Do not upload confidential material unless permitted by NVIDIA's terms.</p>
+          <div id="vb-nvidia-video-results" style="margin-top:16px" aria-live="polite"></div>
+        </section>
       </div>
 
       <div id="human-tab" class="dash-tab-content" style="display:none;">
@@ -823,7 +842,7 @@ nav{border-bottom-color:var(--border)}
           <textarea id="live-paste" class="dash-textarea" placeholder="If the link can't be read, paste the page's HTML (View source) or the post caption here."></textarea>
           <div class="dash-actions">
             <button class="btn primary" id="live-run" onclick="vbRunLive()">Audit published content →</button>
-            <button class="btn outline" onclick="vbLoadLiveDemo()">Load example page</button>
+            <button class="btn outline" onclick="vbLoadLiveDemo()">Load demo page</button>
           </div>
           <p class="vb-fine" id="live-note">Most browsers block reading other websites directly (CORS), and social platforms need a login. For reliable crawling, set <code>VB_CRAWL_PROXY</code> to your own backend endpoint; otherwise use the paste box.</p>
         </div>
@@ -831,11 +850,11 @@ nav{border-bottom-color:var(--border)}
       </div>
 
       <div id="heat-tab" class="dash-tab-content" style="display:none;">
-        <div class="vb-welcome"><div><div class="eyebrow accent">RECURRING MISTAKES</div><h2>Risk heatmap</h2><p class="muted">Issues found in every scan, by check and week. Darker means more issues. Click a box to see the exact flagged content.</p></div><span class="vb-demo-tag" id="heat-demo-tag" style="display:none"></span></div>
+        <div class="vb-welcome"><div><div class="eyebrow accent">RECURRING MISTAKES</div><h2>Risk heatmap</h2><p class="muted">Issues found in your real scans, by check and week. Darker means more issues. Click a box to see the exact flagged content.</p></div></div>
         <div class="card">
           <div class="between" style="flex-wrap:wrap;gap:12px">
             <div class="vb-seg" role="group" aria-label="Date range"><button id="heat-r-7" onclick="vbHeatRange(7)">Last 7 days</button><button id="heat-r-30" onclick="vbHeatRange(30)">Last 30 days</button><button id="heat-r-0" onclick="vbHeatRange(0)">All time</button></div>
-            <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><input type="checkbox" id="heat-demo" hidden></div>
+            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><select id="heat-sector" aria-label="Filter by sector" style="display:none;width:auto" onchange="vbHeatSetSector(this.value)"></select><button class="btn outline" id="heat-refresh" onclick="vbHeatRefresh()">↻ Refresh</button><button class="btn outline" onclick="vbHeatClearAll()">Clear history</button></div>
           </div>
           <div id="heat-insight" class="vb-live-sum" style="margin-top:14px"></div>
           <div id="heat-grid" class="vb-heat-wrap"></div>
@@ -854,13 +873,26 @@ nav{border-bottom-color:var(--border)}
           <article class="vb-stat"><span class="vb-stat-icon">⚖</span><small>Rule set</small><strong id="vb-mon-ver" style="font-size:20px">-</strong><em>Active guideline version</em></article>
         </div>
         <div class="card">
-          <div class="between"><div><h3>Re-scan triggers</h3><p class="muted vb-sub">Runs on page open, when the evidence register changes, and when rules change.</p></div>
-          <div class="dash-actions" style="margin:0"><button class="btn outline" onclick="vbMonitorRescan()">↻ Re-scan all now</button><button class="btn outline" onclick="vbSimulateUpdate()">Simulate guideline update</button><button class="btn outline" onclick="vbResetMonitor()">Clear all</button></div></div>
+          <div class="between"><div><h3>Re-scan triggers</h3><p class="muted vb-sub">Runs automatically on page open, every minute, when the evidence register changes, and when a guideline rule is added or removed.</p><p class="vb-fine" id="vb-mon-last" style="margin:6px 0 0">Not scanned yet.</p></div>
+          <div class="dash-actions" style="margin:0"><button class="btn outline" onclick="vbMonitorRescan()">↻ Re-scan all now</button><button class="btn outline" onclick="vbClearMonitor()">Clear all monitored items</button></div></div>
           <div id="vb-mon-msg" class="toast" style="display:none;margin-top:12px"></div>
+        </div>
+        <div class="card">
+          <h3>Guideline updates</h3>
+          <p class="muted vb-sub">Add a new guideline or rule change (for example an ASCI circular). It is applied immediately and every approved item is re-checked against it.</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:12px">
+            <div><label for="vb-ru-ver">Version label</label><input id="vb-ru-ver" type="text" maxlength="40" placeholder="e.g. ASCI-2026.2"></div>
+            <div><label for="vb-ru-title">Rule title</label><input id="vb-ru-title" type="text" maxlength="90" placeholder="e.g. Unqualified superlative claim"></div>
+            <div><label for="vb-ru-level">Severity</label><select id="vb-ru-level"><option value="high">High risk</option><option value="warning">Warning</option></select></div>
+          </div>
+          <div style="margin-top:12px"><label for="vb-ru-phrases">Flagged phrases (comma separated)</label><input id="vb-ru-phrases" type="text" maxlength="400" placeholder="e.g. best-in-class, unbeatable, world-class"></div>
+          <div style="margin-top:12px"><label for="vb-ru-fix">Suggested fix (optional)</label><input id="vb-ru-fix" type="text" maxlength="240" placeholder="e.g. Remove the superlative or attach comparative proof"></div>
+          <div class="dash-actions" style="margin-top:14px"><button class="btn primary" onclick="vbAddRuleUpdate()">Add rule &amp; re-scan</button></div>
+          <div id="vb-mon-rules" style="margin-top:14px"></div>
         </div>
         <div class="card"><h3>Alerts</h3><div id="vb-mon-alert-list"></div></div>
         <div class="card"><h3>Approved content</h3><div id="vb-mon-list"></div>
-          <p class="vb-fine">Approve content from the Content Analyzer with “Approve &amp; monitor”. Approved items are stored in this browser.</p></div>
+          <p class="vb-fine">Approve content from the Content Analyzer with “Approve &amp; monitor”. Items are stored in this browser and are tagged with the signed-in reviewer who approved them.</p></div>
       </div>
 
       <div id="evidence-tab" class="dash-tab-content" style="display:none;">
@@ -882,7 +914,7 @@ nav{border-bottom-color:var(--border)}
         <div class="card">
           <h3>Registered claims</h3>
           <div class="vb-ev-wrap"><table class="vb-ev-table"><thead><tr><th>Claim</th><th>Evidence</th><th>Proof date</th><th>Valid until</th><th>Status</th><th></th></tr></thead><tbody id="ev-body"></tbody></table></div>
-          <p class="vb-fine">Supported = proof attached and in date. No proof = nothing attached. Proof expired = the valid-until date has passed.</p>
+          <p class="vb-fine">Supported = proof attached and in date. No proof = nothing attached. Proof expired = the valid-until date has passed. Sample rows are pre-filled for demonstration.</p>
         </div>
       </div>
 
@@ -1289,8 +1321,12 @@ nav{border-bottom-color:var(--border)}
   const VB_EV_KEY='veritybrand_evidence_v1';
   function vbToday(){return new Date().toLocaleDateString('en-CA')}
   function vbAddDays(n){const d=new Date();d.setDate(d.getDate()+n);return d.toLocaleDateString('en-CA')}
-  function vbEvSeed(){return []}
-  function vbEvLoad(){try{const s=JSON.parse(localStorage.getItem(VB_EV_KEY)||'null');if(Array.isArray(s))return s.filter(x=>!(['e1','e2','e3'].includes(x.id)&&['market-survey-2026.pdf','https://example.com/price-comparison',''].includes(x.ref||'')&&['India\'s No. 1 brand','Lowest price in the city','Clinically tested'].includes(x.claim)))}catch(e){}return vbEvSeed()}
+  function vbEvSeed(){return [
+    {id:'e1',claim:"India's No. 1 brand",type:'PDF',ref:'market-survey-2026.pdf',date:vbAddDays(-40),until:vbAddDays(180)},
+    {id:'e2',claim:'Lowest price in the city',type:'Link',ref:'https://example.com/price-comparison',date:vbAddDays(-200),until:vbAddDays(-20)},
+    {id:'e3',claim:'Clinically tested',type:'Document',ref:'',date:'',until:''}
+  ]}
+  function vbEvLoad(){try{const s=JSON.parse(localStorage.getItem(VB_EV_KEY)||'null');if(Array.isArray(s))return s}catch(e){}return vbEvSeed()}
   let vbEvidence=vbEvLoad();
   function vbEvSave(){try{localStorage.setItem(VB_EV_KEY,JSON.stringify(vbEvidence))}catch(e){}try{vbUpdateMonitorBadge()}catch(e){}}
   function vbClaimStatus(e){if(!e.ref)return 'noproof';if(e.until&&e.until<vbToday())return 'expired';return 'supported'}
@@ -1717,19 +1753,19 @@ nav{border-bottom-color:var(--border)}
   /* ===== Update 1: insights data ===== */
   const VB_INSIGHT_KEY='veritybrand_insights_v1';
   const VB_GUIDELINES=[
-    {id:'claims',label:'Unsubstantiated superiority / guarantee claims',std:'ASCI',base:0},
-    {id:'alt',label:'Missing image alternative text',std:'WCAG 1.1.1',base:0},
-    {id:'link',label:'Vague link text',std:'WCAG 2.4.4',base:0},
-    {id:'disc',label:'Mandatory disclaimer missing',std:'Brand',base:0},
-    {id:'color',label:'Off-palette brand colour',std:'Brand',base:0}
+    {id:'claims',label:'Unsubstantiated superiority / guarantee claims',std:'ASCI',base:42},
+    {id:'alt',label:'Missing image alternative text',std:'WCAG 1.1.1',base:31},
+    {id:'link',label:'Vague link text',std:'WCAG 2.4.4',base:24},
+    {id:'disc',label:'Mandatory disclaimer missing',std:'Brand',base:17},
+    {id:'color',label:'Off-palette brand colour',std:'Brand',base:11}
   ];
   const VB_TERMS=[
-    {id:'guaranteed',label:'guaranteed',re:/guaranteed?/i,base:0,g:'claims'},
-    {id:'no1',label:'No. 1',re:/no\.?\s*1\b|number one/i,base:0,g:'claims'},
-    {id:'click',label:'click here',re:/click here/i,base:0,g:'link'},
-    {id:'cheap',label:'cheap',re:/\bcheap\b/i,base:0,g:null},
-    {id:'money',label:'100% money back',re:/100%\s*money[\s-]*back/i,base:0,g:'claims'},
-    {id:'best',label:'best in india',re:/best in india/i,base:0,g:'claims'}
+    {id:'guaranteed',label:'guaranteed',re:/guaranteed?/i,base:38,g:'claims'},
+    {id:'no1',label:'No. 1',re:/no\.?\s*1\b|number one/i,base:29,g:'claims'},
+    {id:'click',label:'click here',re:/click here/i,base:24,g:'link'},
+    {id:'cheap',label:'cheap',re:/\bcheap\b/i,base:16,g:null},
+    {id:'money',label:'100% money back',re:/100%\s*money[\s-]*back/i,base:12,g:'claims'},
+    {id:'best',label:'best in india',re:/best in india/i,base:9,g:'claims'}
   ];
   function vbGetInsightDelta(){try{const d=JSON.parse(localStorage.getItem(VB_INSIGHT_KEY)||'{}');return d&&typeof d==='object'?d:{}}catch(e){return {}}}
   function vbSaveInsightDelta(d){try{localStorage.setItem(VB_INSIGHT_KEY,JSON.stringify(d))}catch(e){}}
@@ -2223,21 +2259,36 @@ function vbLoadLiveDemo(){
   document.getElementById('live-paste').value=`<html><head><title>Diwali Mega Sale | BrightHome</title><meta name="description" content="India's No. 1 appliance store. Guaranteed lowest price!"></head><body><h1>Diwali Mega Sale</h1><p>We are India's No. 1 appliance brand with guaranteed 100% satisfaction.</p><p>Offer valid till 20 October 2025 on all products.</p><p>Lowest price in the city or your money back.</p><a href="/offers">Click here</a><img src="hero.jpg"><button></button></body></html>`;
 }
 
-/* ---- Monitor & auto re-scan ---- */
-const VB_APPROVED_KEY='veritybrand_approved_v1',VB_RULEVER_KEY='veritybrand_rules_applied_v1';
+/* ---- Monitor & auto re-scan (fully dynamic: nothing is pre-filled) ---- */
+const VB_APPROVED_KEY='veritybrand_approved_v1',VB_RULEUPD_KEY='veritybrand_rule_updates_v2';
 const VB_BASE_VER='ASCI-2026.1';
-const VB_RULE_UPDATES=[{ver:'ASCI-2026.2',rule:{key:'claims',level:'high',en:/best[\s-]in[\s-]class|world[\s-]class|unbeatable|unmatched/i,title:'Unqualified superlative claim',why:'Absolute superlatives such as "best-in-class" or "unbeatable" must be substantiated.',fix:'Remove the superlative or attach comparative proof in the Evidence Register.',std:'Guideline update (simulated for demo)'}}];
-function vbRulesApplied(){try{return Math.min(VB_RULE_UPDATES.length,Math.max(0,parseInt(localStorage.getItem(VB_RULEVER_KEY)||'0',10)||0))}catch(e){return 0}}
-for(let i=0;i<vbRulesApplied();i++)VB_RULES.push(VB_RULE_UPDATES[i].rule);
-function vbRuleVer(){const n=vbRulesApplied();return n?VB_RULE_UPDATES[n-1].ver:VB_BASE_VER}
+let vbRuleUpdates=[],vbLastScan=null;
+function vbBuildRule(u){
+  const esc=t=>t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/[\s-]+/g,'[\\s-]+');
+  return {key:'claims',level:u.level==='warning'?'warning':'high',en:new RegExp(u.phrases.map(esc).join('|'),'i'),title:u.title,why:u.why,fix:u.fix,std:'Guideline update '+u.ver};
+}
+function vbRuleUpdatesSave(){try{localStorage.setItem(VB_RULEUPD_KEY,JSON.stringify(vbRuleUpdates.map(({rule,...r})=>r)))}catch(e){}}
+(function(){
+  let list=[];try{const x=JSON.parse(localStorage.getItem(VB_RULEUPD_KEY)||'[]');if(Array.isArray(x))list=x.filter(u=>u&&u.title&&Array.isArray(u.phrases)&&u.phrases.length)}catch(e){}
+  vbRuleUpdates=list.map(u=>({...u,rule:vbBuildRule(u)}));
+  vbRuleUpdates.forEach(u=>VB_RULES.push(u.rule));
+  try{localStorage.removeItem('veritybrand_rules_applied_v1')}catch(e){}
+})();
+function vbRulesApplied(){return vbRuleUpdates.length}
+function vbRuleVer(){return vbRuleUpdates.length?vbRuleUpdates[vbRuleUpdates.length-1].ver:VB_BASE_VER}
 function vbRelevantTitles(text,sector){return vbAnalyze(text,sector||'general').filter(x=>x.level==='high'||x.level==='warning').map(x=>x.title)}
-function vbApprovedSeed(){return []}
-function vbApprovedLoad(){try{const s=JSON.parse(localStorage.getItem(VB_APPROVED_KEY)||'null');if(Array.isArray(s))return s.filter(x=>!(['a1','a2','a3'].includes(x.id)&&/^(Meera|Aarav)/.test(x.by||'')))}catch(e){}return vbApprovedSeed()}
+function vbWho(){const u=window.vbCurrentUser;return (u&&(u.name||u.email))||'Reviewer'}
+/* Approved items come only from the signed-in user's own approvals. Old built-in sample items are dropped. */
+function vbApprovedLoad(){
+  try{const s=JSON.parse(localStorage.getItem(VB_APPROVED_KEY)||'null');
+    if(Array.isArray(s))return s.filter(x=>x&&x.text&&!(/^a[123]$/.test(x.id)&&/Meera|Aarav/.test(x.by||''))).map(x=>({...x,snap:Array.isArray(x.snap)?x.snap:[],by:x.by||'Reviewer'}))}catch(e){}
+  return [];
+}
 let vbApproved=vbApprovedLoad();
 function vbApprovedSave(){try{localStorage.setItem(VB_APPROVED_KEY,JSON.stringify(vbApproved))}catch(e){}try{vbUpdateMonitorBadge()}catch(e){}}
 function vbDaysTo(d){return Math.ceil((new Date(d+'T23:59:59')-Date.now())/86400000)}
 function vbMonitorState(){
-  const appliedTitles=VB_RULE_UPDATES.slice(0,vbRulesApplied()).map(u=>u.rule.title);
+  const appliedTitles=vbRuleUpdates.map(u=>u.title);
   return vbApproved.map(it=>{
     const now=vbRelevantTitles(it.text,it.sector),neu=now.filter(t=>!it.snap.includes(t));
     const lower=it.text.toLowerCase();
@@ -2248,11 +2299,17 @@ function vbMonitorState(){
   });
 }
 function vbMonitorCount(){return vbMonitorState().filter(s=>s.found.length).length}
-function vbUpdateMonitorBadge(){
+function vbBadgeOnly(){
   const n=vbMonitorCount(),b=document.getElementById('vb-monitor-badge');
   if(b){b.textContent=n;b.style.display=n?'inline-block':'none'}
   const bn=document.getElementById('vb-monitor-banner');
   if(bn)bn.innerHTML=n?`<div class="vb-mon-banner"><span><b>${n} approved item${n>1?'s':''} need${n>1?'':'s'} a re-check.</b> A guideline or proof document changed since approval.</span><button class="btn outline" onclick="switchTabById('monitor-tab')">Review alerts →</button></div>`:'';
+}
+function vbMonLastLabel(){const e=document.getElementById('vb-mon-last');if(e&&vbLastScan)e.textContent='Last automatic re-scan: '+new Date(vbLastScan).toLocaleTimeString()+' · '+vbApproved.length+' item'+(vbApproved.length===1?'':'s')+' checked.'}
+/* Every call is a fresh re-scan of all approved items. */
+function vbUpdateMonitorBadge(){
+  vbLastScan=Date.now();vbBadgeOnly();vbMonLastLabel();
+  const t=document.getElementById('monitor-tab');if(t&&t.style.display!=='none')vbRenderMonitor();
 }
 function vbApproveBar(v){
   if(v.c==='red')return '<p class="vb-fine">Resolve the high-risk issues above before approving this content for monitoring.</p>';
@@ -2261,7 +2318,7 @@ function vbApproveBar(v){
 function vbApproveCurrent(){
   const a=vbLastAudit;if(!a)return;
   const t=a.raw.replace(/\s+/g,' ').trim();
-  vbApproved.unshift({id:'a'+Date.now(),title:t.slice(0,50)+(t.length>50?'…':''),text:a.raw.slice(0,3000),sector:a.sector,approvedAt:new Date().toISOString(),by:'Reviewer',snap:vbRelevantTitles(a.raw,a.sector),rv:vbRulesApplied()});
+  vbApproved.unshift({id:'a'+Date.now(),title:t.slice(0,50)+(t.length>50?'…':''),text:a.raw.slice(0,3000),sector:a.sector,approvedAt:new Date().toISOString(),by:vbWho(),snap:vbRelevantTitles(a.raw,a.sector),rv:vbRulesApplied()});
   vbApprovedSave();
   document.querySelectorAll('#vb-approve-msg').forEach(e=>e.textContent='Approved. Now monitored for rule and proof changes (see Monitor & Re-scan).');
 }
@@ -2270,36 +2327,50 @@ function vbRenderMonitor(){
   const st=vbMonitorState(),n=st.filter(s=>s.found.length).length;
   const set=(i,v)=>{const e=document.getElementById(i);if(e)e.textContent=v};
   set('vb-mon-items',vbApproved.length);set('vb-mon-alerts',n);set('vb-mon-ver',vbRuleVer());
-  const al=document.getElementById('vb-mon-alert-list');
+  const al=document.getElementById('vb-mon-alert-list'),li=document.getElementById('vb-mon-list'),ru=document.getElementById('vb-mon-rules');
+  if(!al||!li)return;
   const alerts=st.filter(s=>s.found.length||s.soon.length);
   al.innerHTML=alerts.length?alerts.map(s=>{
     const lvl=s.found.length?'high':'';
     const cause=[...new Set(s.found.map(f=>f.cause))].map(c=>`<span class="vb-cause">${vbCauseLabel(c)}</span>`).join('');
     const proofMsg=s.badEv.map(e=>`Proof for “${vbEsc(e.claim)}” ${vbClaimStatus(e)==='expired'?'expired on '+vbEsc(e.until):'is missing'}.`).join(' ');
-    const ruleMsg=s.found.some(f=>f.cause==='rules')?`Guideline update ${vbRuleVer()} now flags wording in this content.`:'';
+    const ruleMsg=s.found.some(f=>f.cause==='rules')?`Guideline update ${vbEsc(vbRuleVer())} now flags wording in this content.`:'';
     const soonMsg=s.soon.map(e=>`Proof for “${vbEsc(e.claim)}” expires in ${vbDaysTo(e.until)} day(s) (${vbEsc(e.until)}).`).join(' ');
-    return `<article class="audit-result ${lvl}" style="margin-top:12px"><div class="between"><h4>${vbEsc(s.it.title)}${cause}</h4><span class="pill">${s.found.length?'Re-check needed':'Heads-up'}</span></div><p>${[proofMsg,ruleMsg,soonMsg].filter(Boolean).join(' ')}</p>${s.found.length?'<ul style="margin:8px 0 0 18px;font-size:12px;color:var(--ink)">'+s.found.map(f=>'<li>'+f.title+'</li>').join('')+'</ul>':''}<div class="dash-actions" style="margin-top:12px"><button class="btn outline" onclick="vbOpenInScanner(\''+s.it.id+'\')">Open in scanner</button>${s.found.length?'<button class="btn outline" onclick="vbReapprove(\''+s.it.id+'\')">Re-approve as is</button>':''}</div></article>`}).join(''):'<div class="vb-empty">No alerts. Every approved item still passes the current rules and proof.</div>';
-  const li=document.getElementById('vb-mon-list');
+    return `<article class="audit-result ${lvl}" style="margin-top:12px"><div class="between"><h4>${vbEsc(s.it.title)}${cause}</h4><span class="pill">${s.found.length?'Re-check needed':'Heads-up'}</span></div><p>${[proofMsg,ruleMsg,soonMsg].filter(Boolean).join(' ')}</p>${s.found.length?'<ul style="margin:8px 0 0 18px;font-size:12px;color:var(--ink)">'+s.found.map(f=>'<li>'+vbEsc(f.title)+'</li>').join('')+'</ul>':''}<div class="dash-actions" style="margin-top:12px"><button class="btn outline" onclick="vbOpenInScanner('${s.it.id}')">Open in scanner</button>${s.found.length?`<button class="btn outline" onclick="vbReapprove('${s.it.id}')">Re-approve as is</button>`:''}</div></article>`}).join(''):'<div class="vb-empty">'+(vbApproved.length?'No alerts. Every approved item still passes the current rules and proof.':'No alerts yet. Approve content to start monitoring it.')+'</div>';
   li.innerHTML=vbApproved.length?st.map(s=>{
     const cls=s.found.length?'expired':(s.soon.length?'noproof':'supported'),lab=s.found.length?'Needs re-check':(s.soon.length?'Proof expiring':'Clear');
     return `<div class="vb-mon-item"><div class="between"><b>${vbEsc(s.it.title)}</b><span class="vb-ev-pill ${cls}">${lab}</span></div><p>“${vbEsc(s.it.text.slice(0,160))}${s.it.text.length>160?'…':''}”</p><p>Approved by ${vbEsc(s.it.by)} · ${vbFmt(s.it.approvedAt)}</p><div class="dash-actions" style="margin-top:10px"><button class="btn outline" onclick="vbOpenInScanner('${s.it.id}')">Open in scanner</button><button class="vb-ev-del" onclick="vbDelApproved('${s.it.id}')">Remove</button></div></div>`}).join(''):'<div class="vb-empty">Nothing approved yet. Approve content from the Content Analyzer to start monitoring it.</div>';
-  vbUpdateMonitorBadge();
+  if(ru)ru.innerHTML=vbRuleUpdates.length?'<h4 style="font-size:13px;margin:0 0 8px">Applied guideline updates</h4>'+vbRuleUpdates.map((u,i)=>`<div class="vb-mon-item"><div class="between"><b>${vbEsc(u.ver)} · ${vbEsc(u.title)}</b><span class="vb-ev-pill ${u.level==='warning'?'noproof':'expired'}">${u.level==='warning'?'Warning':'High risk'}</span></div><p>Flags: ${u.phrases.map(x=>'“'+vbEsc(x)+'”').join(', ')}</p><p>Added ${vbFmt(u.at)}</p><div class="dash-actions" style="margin-top:10px"><button class="vb-ev-del" onclick="vbRemoveRule(${i})">Remove rule</button></div></div>`).join(''):'<div class="vb-empty">No custom guideline updates yet. The base rule set ('+vbEsc(VB_BASE_VER)+') is active.</div>';
+  vbBadgeOnly();vbMonLastLabel();
 }
 function vbMonMsg(t){const m=document.getElementById('vb-mon-msg');if(m){m.textContent=t;m.style.display='block'}}
-function vbMonitorRescan(){vbRenderMonitor();vbMonMsg('Re-scanned '+vbApproved.length+' approved item'+(vbApproved.length===1?'':'s')+' at '+new Date().toLocaleTimeString()+'.')}
-function vbSimulateUpdate(){
-  const n=vbRulesApplied();
-  if(n>=VB_RULE_UPDATES.length){vbMonMsg('All sample guideline updates are already applied. Use Reset demo to start again.');return}
-  VB_RULES.push(VB_RULE_UPDATES[n].rule);try{localStorage.setItem(VB_RULEVER_KEY,String(n+1))}catch(e){}
-  vbRenderMonitor();vbMonMsg('Guideline update '+VB_RULE_UPDATES[n].ver+' applied. All approved content was re-scanned automatically.');
+function vbMonitorRescan(){vbUpdateMonitorBadge();vbMonMsg('Re-scanned '+vbApproved.length+' approved item'+(vbApproved.length===1?'':'s')+' at '+new Date().toLocaleTimeString()+'.')}
+function vbAddRuleUpdate(){
+  const g=id=>(document.getElementById(id)||{}).value||'';
+  const title=g('vb-ru-title').trim(),level=g('vb-ru-level')==='warning'?'warning':'high',fixIn=g('vb-ru-fix').trim();
+  const phrases=[...new Set(g('vb-ru-phrases').split(/[,\n]+/).map(x=>x.trim()).filter(x=>x.length>=2))].slice(0,20);
+  if(!title){vbMonMsg('Enter a rule title.');return}
+  if(!phrases.length){vbMonMsg('Enter at least one flagged phrase (2+ characters), separated by commas.');return}
+  if(vbRuleUpdates.some(u=>u.title.toLowerCase()===title.toLowerCase())){vbMonMsg('A rule with this title already exists. Remove it first or use a different title.');return}
+  const ver=g('vb-ru-ver').trim()||('Custom-'+(vbRuleUpdates.length+1));
+  const u={ver,title,level,phrases,why:'Guideline update '+ver+': wording matching “'+title+'” now needs substantiation or rewording.',fix:fixIn||'Reword the flagged phrase or attach supporting proof in the Evidence Register.',at:new Date().toISOString()};
+  u.rule=vbBuildRule(u);vbRuleUpdates.push(u);VB_RULES.push(u.rule);vbRuleUpdatesSave();
+  ['vb-ru-ver','vb-ru-title','vb-ru-phrases','vb-ru-fix'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});
+  vbUpdateMonitorBadge();
+  vbMonMsg('Guideline update '+ver+' applied. '+vbApproved.length+' approved item'+(vbApproved.length===1?' was':'s were')+' re-scanned automatically.');
 }
-function vbResetMonitor(){
-  VB_RULE_UPDATES.forEach(u=>{const i=VB_RULES.indexOf(u.rule);if(i>-1)VB_RULES.splice(i,1)});
-  try{localStorage.removeItem(VB_RULEVER_KEY);localStorage.removeItem(VB_APPROVED_KEY)}catch(e){}
-  vbApproved=vbApprovedSeed();vbRenderMonitor();vbMonMsg('All monitored items cleared and base guideline version restored.');
+function vbRemoveRule(i){
+  const u=vbRuleUpdates[i];if(!u)return;
+  const k=VB_RULES.indexOf(u.rule);if(k>-1)VB_RULES.splice(k,1);
+  vbRuleUpdates.splice(i,1);vbRuleUpdatesSave();vbUpdateMonitorBadge();vbMonMsg('Rule removed and approved content re-scanned.');
 }
-function vbReapprove(id){const it=vbApproved.find(x=>x.id===id);if(!it)return;it.snap=vbRelevantTitles(it.text,it.sector);it.rv=vbRulesApplied();it.approvedAt=new Date().toISOString();it.by='Reviewer';vbApprovedSave();vbRenderMonitor()}
-function vbDelApproved(id){vbApproved=vbApproved.filter(x=>x.id!==id);vbApprovedSave();vbRenderMonitor()}
+function vbClearMonitor(){
+  if(!vbApproved.length){vbMonMsg('There are no monitored items to clear.');return}
+  if(!confirm('Remove all '+vbApproved.length+' monitored item(s)? This cannot be undone.'))return;
+  vbApproved=[];vbApprovedSave();vbMonMsg('All monitored items were removed.');
+}
+function vbReapprove(id){const it=vbApproved.find(x=>x.id===id);if(!it)return;it.snap=vbRelevantTitles(it.text,it.sector);it.rv=vbRulesApplied();it.approvedAt=new Date().toISOString();it.by=vbWho();vbApprovedSave()}
+function vbDelApproved(id){vbApproved=vbApproved.filter(x=>x.id!==id);vbApprovedSave()}
 function vbOpenInScanner(id){
   const it=vbApproved.find(x=>x.id===id);if(!it)return;
   document.getElementById('dash-audit-input').value=it.text;document.getElementById('dash-sector').value=it.sector;
@@ -2319,7 +2390,7 @@ alter table scan_results enable row level security;
 create policy "own scans" on scan_results for all using (user_id = auth.uid()) with check (user_id = auth.uid()); */
 const VB_SCANLOG_KEY='veritybrand_scanlog_v1';
 const VB_HEAT_CATS=[['asci','ASCI claims'],['wcag','WCAG accessibility'],['brand','Brand voice'],['custom','Custom rules']];
-let vbScanSrc='text',vbHeatDays=30,vbHeatSel=null,vbHeatSbLoaded=false;
+let vbScanSrc='text',vbHeatDays=30,vbHeatSel=null;
 function vbDecode(s){return String(s).replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&')}
 function vbHeatCat(std,title){const s=(std||'')+' '+(title||'');if(/WCAG/i.test(s))return 'wcag';if(/Custom (brand )?rule/i.test(s))return 'custom';if(/Brand Knowledge Hub|Configured brand rules|Wordmark|Pixel colour|Prohibited brand/i.test(s))return 'brand';return 'asci'}
 function vbSnip(content,phrases){
@@ -2337,33 +2408,9 @@ function vbMakeItems(list,content){
   });
 }
 function vbScore(items){return Math.min(100,items.filter(i=>i.level==='high').length*25+items.filter(i=>i.level==='warning').length*10)}
-function vbRand(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 function vbWeekStart(ts){const d=new Date(ts);d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d.getTime()}
-const VB_DEMO_T={
- asci:[['high','Superiority claim without proof',"India's No. 1","We are India's No. 1 mattress brand. Sleep better tonight.",'ASCI Code · Claims'],['high','Absolute guarantee claim','Guaranteed 100% results','Guaranteed 100% results or your money back on every order.','ASCI Code · Claims'],['high','Lowest-price / comparative claim','Lowest price','Lowest price in the city, only this festive week!','ASCI Code · Claims'],['warning','Possible undisclosed sponsorship','link in bio','Loving this new serum! Use code GLOW10, link in bio.','ASCI Influencer Guidelines · disclosure labels']],
- wcag:[['high','Missing image alternative text','<img','<img src="festive-banner.jpg"> Festive offers are live','WCAG 2.2 · 1.1.1 (Level A)'],['warning','Vague link text','Click here','Click here to see our new collection','WCAG 2.2 · 2.4.4 (Level A)'],['high','Button has no accessible name','<button','<button></button> Subscribe to updates','WCAG 2.2 · 4.1.2 (Level A)']],
- brand:[['high','Prohibited brand term: "consumers"','consumers','Built for consumers who want more from every rupee.','Brand Knowledge Hub · prohibited terms'],['warning','Required phrase missing: "T&C apply"','','New collection launches Friday. Shop now.','Brand Knowledge Hub · required phrases']],
- custom:[['high','Custom rule: avoid "cheap"','cheap','Cheap deals on every appliance this weekend.','Custom brand rule'],['warning','Custom rule: missing "Terms and Conditions apply"','','Flat 30% off storewide. Shop today.','Custom brand rule']]};
-const VB_DEMO_N={asci:[2,3,2,4,5,6,8,11],wcag:[4,3,4,3,3,2,2,2],brand:[1,0,2,1,1,2,1,3],custom:[0,1,0,1,2,1,3,4]};
-function vbDemoScans(){
-  const rnd=vbRand(20261110),now=Date.now(),thisWk=vbWeekStart(now),out=[];
-  for(let w=7;w>=0;w--){
-    const ws=thisWk-w*7*864e5,span=Math.min(7*864e5,now-ws);
-    VB_HEAT_CATS.forEach(([cat])=>{
-      const n=VB_DEMO_N[cat][7-w],items=[];
-      for(let k=0;k<n;k++){const t=VB_DEMO_T[cat][Math.floor(rnd()*VB_DEMO_T[cat].length)];
-        items.push({cat,level:t[0],title:t[1],why:t[1]+'. Found: "'+t[2]+'".',std:t[4],phrases:t[2]?[t[2]]:[],snip:vbSnip(t[3],t[2]?[t[2]]:[]),_c:t[3]})}
-      for(let k=0;k<items.length;k+=3){
-        const grp=items.slice(k,k+3);
-        out.push({id:'d'+w+cat+k,ts:Math.round(ws+(0.05+rnd()*0.9)*span),src:'text',sector:'general',demo:true,content:grp.map(g=>g._c).join('\n'),items:grp.map(({_c,...r})=>r),score:0});
-      }
-    });
-  }
-  out.forEach(r=>r.score=vbScore(r.items));
-  return out;
-}
-function vbScanLoad(){try{const s=JSON.parse(localStorage.getItem(VB_SCANLOG_KEY)||'null');if(Array.isArray(s))return s}catch(e){}return []}
-let vbScanLog=vbScanLoad().filter(r=>!r.demo);
+function vbScanLoad(){try{const s=JSON.parse(localStorage.getItem(VB_SCANLOG_KEY)||'null');if(Array.isArray(s))return s.filter(r=>r&&!r.demo&&Array.isArray(r.items))}catch(e){}return []}
+let vbScanLog=vbScanLoad();
 function vbScanSave(){vbScanLog.sort((a,b)=>b.ts-a.ts);vbScanLog=vbScanLog.slice(0,400);try{localStorage.setItem(VB_SCANLOG_KEY,JSON.stringify(vbScanLog))}catch(e){}}
 async function vbSbSave(rec){
   let sb;try{sb=getSupabase()}catch(e){return false}
@@ -2410,47 +2457,73 @@ function vbBrandChecks(raw,add){
   c.required.forEach(t=>{if(!raw.toLowerCase().includes(t.toLowerCase()))add('warning','Custom rule: missing "'+vbEsc(t)+'"','Your custom rules require this wording and it was not found.','Add the required wording.','Custom brand rule')});
 }
 
-/* Heatmap view */
+/* Heatmap view (built only from real scans) */
+let vbHeatSector='all';
 function vbHeatRange(d){vbHeatDays=d;vbHeatSel=null;vbRenderHeat()}
-function vbHeatClearDemo(){vbScanLog=vbScanLog.filter(r=>!r.demo);vbHeatSel=null;vbScanSave();vbRenderHeat()}
-function vbHeatReloadDemo(){vbScanLog=vbScanLog.filter(r=>!r.demo).concat(vbDemoScans());vbHeatSel=null;vbScanSave();vbRenderHeat()}
-async function vbOpenHeat(){
-  vbRenderHeat();
-  if(!vbHeatSbLoaded){vbHeatSbLoaded=true;const r=await vbSbLoad();
-    const s=document.getElementById('heat-sync');
-    if(r==='ok'){s.textContent='Scan history loaded from Supabase.';vbRenderHeat();vbHeatSbLoaded=true}
-    else if(r==='off')s.textContent='Scans are saved in this browser. Add your Supabase project URL and key (and the scan_results table) to sync them across devices.';
-    else s.textContent='Could not reach Supabase. Showing scans saved in this browser.';}
+function vbHeatSetSector(v){vbHeatSector=v||'all';vbHeatSel=null;vbRenderHeat()}
+function vbHeatClearAll(){
+  if(!vbScanLog.length)return;
+  if(!confirm('Clear the scan history saved in this browser? Scans already synced to Supabase are kept there and return on Refresh.'))return;
+  vbScanLog=[];vbHeatSel=null;vbScanSave();vbRenderHeat();
 }
+async function vbHeatRefresh(){
+  const s=document.getElementById('heat-sync'),b=document.getElementById('heat-refresh');
+  if(b)b.disabled=true;if(s)s.textContent='Loading scan history…';
+  const r=await vbSbLoad();
+  if(s){
+    if(r==='ok')s.textContent='Scan history synced with Supabase at '+new Date().toLocaleTimeString()+'.';
+    else if(r==='off')s.textContent='Scans are saved in this browser. Add your Supabase project URL and key (and the scan_results table) to sync them across devices.';
+    else s.textContent='Could not reach Supabase. Showing scans saved in this browser.';
+  }
+  vbRenderHeat();if(b)b.disabled=false;
+}
+async function vbOpenHeat(){vbRenderHeat();await vbHeatRefresh()}
 function vbHeatData(){
-  const incl=document.getElementById('heat-demo').checked,now=Date.now(),cut=vbHeatDays?now-vbHeatDays*864e5:0;
-  const recs=vbScanLog.filter(r=>(incl||!r.demo)&&r.ts>=cut);
+  const now=Date.now(),cut=vbHeatDays?now-vbHeatDays*864e5:0;
+  const recs=vbScanLog.filter(r=>r.ts>=cut&&(vbHeatSector==='all'||(r.sector||'general')===vbHeatSector));
   const first=recs.length?Math.min(...recs.map(r=>r.ts)):now;
   let wk=vbWeekStart(vbHeatDays?Math.max(cut,first):first);const last=vbWeekStart(now),weeks=[];
   while(wk<=last&&weeks.length<26){weeks.push(wk);const d=new Date(wk);d.setDate(d.getDate()+7);wk=d.getTime()}
   const cells={};VB_HEAT_CATS.forEach(([c])=>{cells[c]={};weeks.forEach(w=>cells[c][w]={n:0,high:0,warn:0,items:[]})});
-  recs.forEach(r=>{const w=vbWeekStart(r.ts);r.items.forEach(it=>{const c=cells[it.cat]&&cells[it.cat][w];if(!c)return;c.n++;it.level==='high'?c.high++:c.warn++;c.items.push({rec:r,it})})});
-  return {weeks,cells,recs,incl};
+  recs.forEach(r=>{const w=vbWeekStart(r.ts);(r.items||[]).forEach(it=>{const c=cells[it.cat]&&cells[it.cat][w];if(!c)return;c.n++;it.level==='high'?c.high++:c.warn++;c.items.push({rec:r,it})})});
+  return {weeks,cells,recs};
 }
 const vbFmtD=ts=>new Date(ts).toLocaleDateString([], {day:'numeric',month:'short'});
+function vbHeatSectorOptions(){
+  const sel=document.getElementById('heat-sector');if(!sel)return;
+  const secs=[...new Set(vbScanLog.map(r=>r.sector||'general'))].sort();
+  if(vbHeatSector!=='all'&&!secs.includes(vbHeatSector))vbHeatSector='all';
+  const nm=x=>(typeof VB_SECTORS!=='undefined'&&VB_SECTORS[x]&&VB_SECTORS[x].name)||x;
+  const html='<option value="all">All sectors</option>'+secs.map(x=>'<option value="'+vbEsc(x)+'">'+vbEsc(nm(x))+'</option>').join('');
+  if(sel.dataset.sig!==html){sel.innerHTML=html;sel.dataset.sig=html}
+  sel.value=vbHeatSector;sel.style.display=secs.length>1?'inline-block':'none';
+}
 function vbRenderHeat(){
   const g=document.getElementById('heat-grid');if(!g)return;
   [7,30,0].forEach(d=>document.getElementById('heat-r-'+d).classList.toggle('on',vbHeatDays===d));
-  const {weeks,cells,recs,incl}=vbHeatData();
-  document.getElementById('heat-demo-tag').style.display=recs.some(r=>r.demo)?'inline-block':'none';
+  vbHeatSectorOptions();
+  const {weeks,cells,recs}=vbHeatData();
+  const total=recs.reduce((n,r)=>n+(r.items||[]).length,0);
+  if(!recs.length){
+    g.innerHTML='<div class="vb-empty" style="margin-top:14px">'+(vbScanLog.length?'No scans match this date range or sector. Try “All time” or another sector.':'No scans yet. Run a scan in the Content Analyzer, Live Audit or File upload and it will appear here automatically.')+'</div>';
+    document.getElementById('heat-insight').innerHTML='No scan data to show yet.';
+    vbRenderHeatDetail();return;
+  }
   let max=1;VB_HEAT_CATS.forEach(([c])=>weeks.forEach(w=>{max=Math.max(max,cells[c][w].n)}));
   g.innerHTML='<div class="vb-heat" style="grid-template-columns:150px repeat('+weeks.length+',minmax(68px,1fr))"><div></div>'+weeks.map(w=>'<div class="vb-heat-h">Week of<br>'+vbFmtD(w)+'</div>').join('')+
    VB_HEAT_CATS.map(([c,lab])=>'<div class="vb-heat-r">'+lab+'</div>'+weeks.map(w=>{
      const x=cells[c][w],a=x.n?0.14+0.78*x.n/max:0,sel=vbHeatSel&&vbHeatSel.c===c&&vbHeatSel.w===w;
      return '<button class="vb-hc'+(sel?' sel':'')+'" '+(x.n?'':'disabled ')+'style="background:'+(x.n?'rgba(189,76,76,'+a.toFixed(2)+')':'var(--surface-2)')+';color:'+(a>0.55?'#fff':'var(--ink)')+'" aria-label="'+lab+', week of '+vbFmtD(w)+': '+x.n+' issues" onclick="vbHeatPick(\''+c+'\','+w+')">'+(x.n||'·')+'</button>'}).join('')).join('')+'</div>';
-  // insight: biggest week-on-week rise among the last two columns
-  let ins='No scans in this range yet. Run a scan and it will appear here.';
-  if(recs.length&&weeks.length>=2){
+  let ins='<b>'+recs.length+'</b> scan'+(recs.length===1?'':'s')+' · <b>'+total+'</b> issue'+(total===1?'':'s')+' in this range.';
+  const freq={};recs.forEach(r=>(r.items||[]).forEach(it=>{freq[it.title]=(freq[it.title]||0)+1}));
+  const top=Object.entries(freq).sort((a,b)=>b[1]-a[1])[0];
+  if(top)ins+=' <b>Most frequent:</b> '+vbEsc(top[0])+' ('+top[1]+'×).';
+  if(weeks.length>=2){
     const a=weeks[weeks.length-2],b=weeks[weeks.length-1];
     const d=VB_HEAT_CATS.map(([c,lab])=>({lab,from:cells[c][a].n,to:cells[c][b].n})).sort((x,y)=>(y.to-y.from)-(x.to-x.from))[0];
-    ins=d.to>d.from?'<b>Rising risk:</b> '+d.lab+' went from '+d.from+' to '+d.to+' issues this week.':'No category increased compared with last week.';
-  }else if(recs.length)ins='Showing '+recs.reduce((n,r)=>n+r.items.length,0)+' issues across '+recs.length+' scans.';
-  document.getElementById('heat-insight').innerHTML=ins+(incl&&recs.some(r=>r.demo)?' <span class="muted">(includes demo data)</span>':'');
+    ins+=d.to>d.from?' <b>Rising risk:</b> '+d.lab+' went from '+d.from+' to '+d.to+' issues this week.':' No category increased compared with last week.';
+  }
+  document.getElementById('heat-insight').innerHTML=ins;
   vbRenderHeatDetail();
 }
 function vbHeatPick(c,w){vbHeatSel=(vbHeatSel&&vbHeatSel.c===c&&vbHeatSel.w===w)?null:{c,w};vbRenderHeat();if(vbHeatSel)document.getElementById('heat-detail').scrollIntoView({behavior:'smooth',block:'nearest'})}
@@ -2464,7 +2537,7 @@ function vbRenderHeatDetail(){
   const items=x.items.slice().sort((a,b)=>(a.it.level==='high'?0:1)-(b.it.level==='high'?0:1)||b.rec.ts-a.rec.ts);
   box.style.display='block';
   box.innerHTML='<div class="between"><div><h3>'+lab+' · '+vbFmtD(vbHeatSel.w)+' to '+vbFmtD(end)+'</h3><p class="muted vb-sub">'+x.n+' issue'+(x.n>1?'s':'')+' ('+x.high+' high risk, '+x.warn+' warning'+(x.warn===1?'':'s')+')</p></div><button class="btn outline" onclick="vbHeatSel=null;vbRenderHeat()">Close</button></div>'+
-   items.map(({rec,it})=>'<article class="audit-result '+(it.level==='high'?'high':'')+'" style="margin-top:12px"><div class="between"><h4>'+vbEsc(it.title)+'</h4><span class="pill">'+vbEsc(it.std||lab)+'</span></div><p>'+vbEsc(it.why)+'</p><div class="vb-snip">'+vbHeatMark(it.snip,it.phrases)+'</div><div class="dash-actions" style="margin-top:10px;align-items:center"><span class="vb-fine" style="margin:0">'+vbFmt(new Date(rec.ts).toISOString())+' · '+({text:'Content scan',live:'Live audit',file:'File upload'}[rec.src]||'Scan')+' · scan risk score '+rec.score+'/100'+(rec.demo?' · demo data':'')+'</span>'+(rec.src==='file'?'':'<button class="btn outline" onclick="vbHeatOpen(\''+rec.id+'\')">Open full content in scanner</button>')+'</div></article>').join('');
+   items.map(({rec,it})=>'<article class="audit-result '+(it.level==='high'?'high':'')+'" style="margin-top:12px"><div class="between"><h4>'+vbEsc(it.title)+'</h4><span class="pill">'+vbEsc(it.std||lab)+'</span></div><p>'+vbEsc(it.why)+'</p><div class="vb-snip">'+vbHeatMark(it.snip,it.phrases)+'</div><div class="dash-actions" style="margin-top:10px;align-items:center"><span class="vb-fine" style="margin:0">'+vbFmt(new Date(rec.ts).toISOString())+' · '+({text:'Content scan',live:'Live audit',file:'File upload'}[rec.src]||'Scan')+' · scan risk score '+rec.score+'/100'+'</span>'+(rec.src==='file'?'':'<button class="btn outline" onclick="vbHeatOpen(\''+rec.id+'\')">Open full content in scanner</button>')+'</div></article>').join('');
 }
 function vbHeatOpen(id){
   const r=vbScanLog.find(x=>x.id===id);if(!r)return;
@@ -2571,12 +2644,12 @@ const VB_API_BASE=(window.VERITYBRAND_API_BASE||'http://127.0.0.1:8000').replace
 const VB_AI_ENDPOINT='/.netlify/functions/ai-compliance';
 const VB_MAX_UNITS=12;
 const VB_IMG_LEVELS=[[1280,.82],[768,.6]]; /* retried at the smaller size if Groq rejects the image as too large */
-const VB_SOCIAL_HOSTS=['youtube.com','youtu.be','instagram.com'];
+const VB_SOCIAL_HOSTS=['youtube.com','youtu.be','instagram.com','x.com','twitter.com'];
 function vbCheckSocialLink(u){
  try{const x=new URL(String(u).trim());if(x.protocol!=='https:')return 'Use a full https:// link.';
   const h=x.hostname.replace(/^(www|m|music)\./,'');
-  if(!VB_SOCIAL_HOSTS.includes(h))return 'Only public YouTube and Instagram links are supported.';return '';
- }catch(e){return 'Enter a valid https:// YouTube or Instagram link.'}
+  if(!VB_SOCIAL_HOSTS.includes(h))return 'Only public Instagram, YouTube and X post links are supported.';return '';
+ }catch(e){return 'Enter a valid https:// Instagram, YouTube or X post link.'}
 }
 async function vbBlobToCanvas(blob,maxDim=2000){
  const url=URL.createObjectURL(blob);
@@ -2761,11 +2834,72 @@ async function vbBackendAnalyze(files,campaign,sector,links=[]){
  if(!ok)throw firstErr||new Error('AI analysis failed.');
  return {findings,limitations:[...new Set(limitations)],extracted_text:extracted.join('\n\n').slice(0,60000),model,status};
 }
+let vbNvidiaVideoFile=null;
+function vbNvidiaVideoSelected(event){
+ const file=event.target.files&&event.target.files[0],label=document.getElementById('vb-nvidia-video-selected'),run=document.getElementById('vb-nvidia-video-run'),out=document.getElementById('vb-nvidia-video-results');
+ vbNvidiaVideoFile=file||null;if(out)out.innerHTML='';
+ if(!file){label.textContent='No video selected.';run.disabled=true;return}
+ const ext=(file.name.split('.').pop()||'').toLowerCase();
+ if(!['mp4','mov','m4v','webm'].includes(ext)&&!/^video\//.test(file.type)){vbNvidiaVideoFile=null;label.textContent='Unsupported video format. Choose MP4, MOV or WebM.';run.disabled=true;return}
+ if(file.size>25*1024*1024){vbNvidiaVideoFile=null;label.textContent='This video is larger than 25 MB. Compress it and try again.';run.disabled=true;return}
+ label.textContent=`Selected: ${file.name} · ${(file.size/1024/1024).toFixed(1)} MB`;run.disabled=false;
+}
+let vbVideoCooldownUntil=0,vbVideoCooldownTimer=null;
+/* Usage/rate limit reached: show a friendly "Limit exceeded" notice (not an error) and pause the button until the wait is over. */
+function vbShowVideoLimit(out,run,data,response){
+  const hdr=Number(response&&response.headers&&response.headers.get('retry-after'));
+  let wait=Number(data&&data.retry_after)||(Number.isFinite(hdr)&&hdr>0?hdr:60);
+  wait=Math.max(5,Math.min(Math.ceil(wait),120));
+  vbVideoCooldownUntil=Date.now()+wait*1000;
+  const box=document.createElement('div');box.className='audit-result';box.setAttribute('role','status');
+  const h=document.createElement('h4');h.textContent='Limit exceeded';box.appendChild(h);
+  const p=document.createElement('p');p.textContent=(data&&data.message)||'The NVIDIA video analysis limit has been reached for now. This is not a problem with your video.';box.appendChild(p);
+  const cd=document.createElement('p');cd.style.fontWeight='700';box.appendChild(cd);
+  const tip=document.createElement('p');tip.className='fix';tip.textContent='Tip: wait for the timer, then run the analysis again. A shorter or smaller clip uses less of your allowance.';box.appendChild(tip);
+  out.replaceChildren(box);
+  const label='Analyse video with NVIDIA →';
+  clearInterval(vbVideoCooldownTimer);
+  const tick=()=>{
+    const left=Math.ceil((vbVideoCooldownUntil-Date.now())/1000);
+    if(left<=0){clearInterval(vbVideoCooldownTimer);cd.textContent='The limit window has passed. You can try again now.';run.textContent=label;run.disabled=!vbNvidiaVideoFile;return}
+    cd.textContent='You can try again in '+left+'s.';run.textContent='Try again in '+left+'s';run.disabled=true;
+  };
+  tick();vbVideoCooldownTimer=setInterval(tick,1000);
+}
+async function vbRunNvidiaVideo(){
+ const file=vbNvidiaVideoFile,run=document.getElementById('vb-nvidia-video-run'),out=document.getElementById('vb-nvidia-video-results');
+ if(!file){out.innerHTML='<div class="audit-result info"><h4>Choose a video first</h4></div>';return}
+ if(Date.now()<vbVideoCooldownUntil)return;
+ run.disabled=true;out.innerHTML='<div class="audit-result info"><h4>Preparing video frames…</h4><p>Reading up to 12 timestamped frames in your browser.</p></div>';
+ try{
+  const sampled=await vbVideoSheets(file,12,4);
+  const frames=sampled.sheets.slice(0,3).map(x=>({label:x.label,image:vbCanvasToJpeg(x.canvas,960,.58)}));
+  out.innerHTML='<div class="audit-result info"><h4>Sending sampled frames to NVIDIA…</h4><p>Reviewing visible claims, branding, disclosures and visual risks.</p></div>';
+  const client=getSupabase(),{data:{session},error}=await client.auth.getSession();
+  if(error||!session?.access_token)throw new Error('Your session has expired. Sign in again to analyse a video.');
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),65000);
+  let response;
+  try{response=await fetch('/.netlify/functions/nvidia-video',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},body:JSON.stringify({name:file.name,duration:sampled.duration,frame_count:sampled.frames,sector:document.getElementById('vb-nvidia-video-sector').value,frames}),signal:controller.signal})}
+  catch(e){if(e.name==='AbortError')throw new Error('NVIDIA video review timed out. Try a shorter clip.');throw new Error('Could not reach the NVIDIA video function. Confirm the site is deployed on Netlify.')}
+  finally{clearTimeout(timer)}
+  const raw=await response.text();let data={};try{data=JSON.parse(raw)}catch{}
+  if(response.status===429||response.status===402||data.limit_exceeded){vbShowVideoLimit(out,run,data,response);return}
+  if(!response.ok)throw new Error(data.error||`NVIDIA video review failed (HTTP ${response.status}).`);
+  const safe=document.createElement('div');safe.className='audit-result info';
+  const h=document.createElement('h4');h.textContent='NVIDIA video review';safe.appendChild(h);
+  const meta=document.createElement('p');meta.className='vb-fine';meta.textContent=`${data.model||'NVIDIA model'} · ${Math.round(sampled.duration)} seconds · ${sampled.frames} frames sampled`;safe.appendChild(meta);
+  const body=document.createElement('pre');body.style.cssText='white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;line-height:1.6;margin:10px 0 0';body.textContent=data.analysis||'No analysis text was returned.';safe.appendChild(body);
+  if(Array.isArray(data.limitations)&&data.limitations.length){const lim=document.createElement('p');lim.className='vb-fine';lim.textContent='Limitations: '+data.limitations.join(' ');safe.appendChild(lim)}
+  out.replaceChildren(safe);
+ }catch(e){out.innerHTML=`<div class="audit-result high"><h4>NVIDIA video analysis failed</h4><p>${vbEsc(e.message||'Unknown error')}</p><p class="fix">Check NVIDIA_API_KEY in Netlify environment variables and redeploy the site.</p></div>`}
+ finally{if(!(Date.now()<vbVideoCooldownUntil))run.disabled=!vbNvidiaVideoFile}
+}
+
 async function vbAnalyzeLink(){
  const input=document.getElementById('vb-link-input'),info=document.getElementById('uploaded-file-info');if(!input||!info)return;
  const url=(input.value||'').trim(),bad=vbCheckSocialLink(url);
  if(bad){info.innerHTML=`<div class="audit-result high"><h4>Link not supported</h4><p>${escapeHtml(bad)}</p></div>`;return}
- info.innerHTML=`<div class="image-scan-card"><div class="image-scan-visual is-scanning"><div style="padding:25px;color:#fff;text-align:center">LINK<br>ANALYSIS</div></div><div><span class="pill">Groq AI ANALYSIS</span><h3 style="margin:10px 0 5px">Reading public link</h3><p class="muted" style="font-size:12px">${escapeHtml(url)}</p><div class="scan-status" id="scan-status" aria-live="polite">Fetching title, captions and thumbnail…</div><div class="scan-progress running" id="scan-progress"><i></i></div><p class="rule-help">Only public details are read, not the full video. Upload the video file for frame-level review.</p></div></div>`;
+ info.innerHTML=`<div class="image-scan-card"><div class="image-scan-visual is-scanning"><div style="padding:25px;color:#fff;text-align:center">LINK<br>ANALYSIS</div></div><div><span class="pill">Groq AI ANALYSIS</span><h3 style="margin:10px 0 5px">Reading public link</h3><p class="muted" style="font-size:12px">${escapeHtml(url)}</p><div class="scan-status" id="scan-status" aria-live="polite">Fetching public post text, metadata and available preview image…</div><div class="scan-progress running" id="scan-progress"><i></i></div><p class="rule-help">Only public post/embed metadata is reviewed. Private posts, blocked media and full video/audio may not be accessible from a link.</p></div></div>`;
  try{
   const ai=await vbBackendAnalyze([],'Social link review','general',[url]);
   const progress=document.getElementById('scan-progress');if(progress)progress.classList.remove('running');
