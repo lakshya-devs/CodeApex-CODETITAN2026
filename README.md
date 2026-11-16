@@ -12,7 +12,6 @@
   ·
   <a href="#architecture">Architecture</a>
 </p>
-## 📢 IMPORTANT NOTE FOR HACKATHON JUDGES
 
 > **📢 IMPORTANT NOTE FOR HACKATHON JUDGES**
 >
