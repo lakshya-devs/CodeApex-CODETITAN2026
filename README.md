@@ -12,7 +12,13 @@
   ·
   <a href="#architecture">Architecture</a>
 </p>
+## 📢 IMPORTANT NOTE FOR HACKATHON JUDGES
 
+For the best experience, judges are encouraged to log in to VerityBrand using their email address through the Live Project to explore its complete range of features. Demo Mode is also available for a quick preview of the platform.
+
+If the verification email does not appear in your inbox, kindly check your Spam/Junk folder.
+
+After logging in, you can explore AI-powered verification tools, organisation management, team collaboration, campaign workflows and more.
 ---
 
 ## 1. Overview
