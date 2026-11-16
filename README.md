@@ -14,11 +14,16 @@
 </p>
 ## 📢 IMPORTANT NOTE FOR HACKATHON JUDGES
 
-For the best experience, judges are encouraged to log in to VerityBrand using their email address through the Live Project to explore its complete range of features. Demo Mode is also available for a quick preview of the platform.
+> **📢 IMPORTANT NOTE FOR HACKATHON JUDGES**
+>
+> For the best experience, we encourage judges to log in to VerityBrand using their email address through the [Live Project](https://veritybrand.netlify.app) to explore the full range of features. Demo Mode is also available for a quick preview.
+>
+> If the verification email does not appear in your inbox, please check your Spam/Junk folder.
+>
+> After logging in, explore AI-powered verification, organisation management, team collaboration, campaign workflows and more.
 
-If the verification email does not appear in your inbox, kindly check your Spam/Junk folder.
+---
 
-After logging in, you can explore AI-powered verification tools, organisation management, team collaboration, campaign workflows and more.
 ---
 
 ## 1. Overview
